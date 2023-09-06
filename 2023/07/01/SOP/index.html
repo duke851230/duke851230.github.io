@@ -19,12 +19,12 @@
     <meta name="description" content="做為 Web 資安系列的第一篇文章，我覺得應該先跟大家來聊聊瀏覽器的基礎安全機制——同源政策（SOP）。因為如果沒有了 SOP 的保障，駭客將可以輕易對我們的網站發起攻擊（例如：CSRF 攻擊），讓我們赤裸裸的暴露在危險之中。關於 CSRF 攻擊也能參考我的另一篇文章：Web 資安系列（三）- CSRF。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Web 資安系列（一）- SOP">
-<meta property="og:url" content="https://jamiechen-1230.github.io/2023/08/05/SOP/index.html">
+<meta property="og:url" content="https://jamiechen-1230.github.io/2023/07/01/SOP/index.html">
 <meta property="og:site_name" content="小小後端の冒險">
 <meta property="og:description" content="做為 Web 資安系列的第一篇文章，我覺得應該先跟大家來聊聊瀏覽器的基礎安全機制——同源政策（SOP）。因為如果沒有了 SOP 的保障，駭客將可以輕易對我們的網站發起攻擊（例如：CSRF 攻擊），讓我們赤裸裸的暴露在危險之中。關於 CSRF 攻擊也能參考我的另一篇文章：Web 資安系列（三）- CSRF。">
 <meta property="og:locale" content="zh_TW">
-<meta property="article:published_time" content="2023-08-05T01:09:00.000Z">
-<meta property="article:modified_time" content="2023-08-30T13:39:39.454Z">
+<meta property="article:published_time" content="2023-06-30T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-09-06T13:13:16.244Z">
 <meta property="article:author" content="Duke">
 <meta property="article:tag" content="Security">
 <meta name="twitter:card" content="summary_large_image">
@@ -208,8 +208,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2023-08-05 09:09" pubdate>
-          2023年8月5日 上午
+        <time datetime="2023-07-01 00:00" pubdate>
+          2023年7月1日 凌晨
         </time>
       </span>
     
@@ -220,7 +220,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          2.3k 字
+          2.4k 字
         
       </span>
     
@@ -273,7 +273,7 @@
             
               <div class="markdown-body">
                 
-                <p>做為 Web 資安系列的第一篇文章，我覺得應該先跟大家來聊聊瀏覽器的基礎安全機制——同源政策（SOP）。因為如果沒有了 SOP 的保障，駭客將可以輕易對我們的網站發起攻擊（例如：CSRF 攻擊），讓我們赤裸裸的暴露在危險之中。<br>關於 CSRF 攻擊也能參考我的另一篇文章：<a target="_blank" rel="noopener" href="https://duke851230.github.io/2023/08/07/CSRF/">Web 資安系列（三）- CSRF</a>。</p>
+                <p>做為 Web 資安系列的第一篇文章，我覺得應該先跟大家來聊聊瀏覽器的基礎安全機制——同源政策（SOP）。因為如果沒有了 SOP 的保障，駭客將可以輕易對我們的網站發起攻擊（例如：CSRF 攻擊），讓我們赤裸裸的暴露在危險之中。<br>關於 CSRF 攻擊也能參考我的另一篇文章：<a target="_blank" rel="noopener" href="https://duke851230.github.io/2023/07/03/CSRF/">Web 資安系列（三）- CSRF</a>。</p>
 <span id="more"></span>
 
 <h2 id="先來說說什麼是-SOP？"><a href="#先來說說什麼是-SOP？" class="headerlink" title="先來說說什麼是 SOP？"></a>先來說說什麼是 SOP？</h2><h3 id="SOP-簡介："><a href="#SOP-簡介：" class="headerlink" title="SOP 簡介："></a><font color=#d2691e>SOP 簡介：</font></h3><blockquote>
@@ -281,10 +281,10 @@
 </blockquote>
 <p>SOP 是網站安全的基礎，是一種<strong>瀏覽器的安全機制</strong>，用於限制網頁應用在瀏覽器中訪問「跨來源資源」的能力。</p>
 <blockquote>
-<p>因為我們有些時候還是會想去使用外部的資源，所以 CORS 就誕生了，它可以讓我們<strong>更靈活的去設定跨域訪問權限</strong>。<br>詳細能參考我的另一篇文章：<a target="_blank" rel="noopener" href="https://duke851230.github.io/2023/08/06/CORS/">Web 資安系列（二）- CORS</a>。</p>
+<p>因為我們有些時候還是會想去使用外部的資源，所以 CORS 就誕生了，它可以讓我們<strong>更靈活的去設定跨域訪問權限</strong>。<br>詳細能參考我的另一篇文章：<a target="_blank" rel="noopener" href="https://duke851230.github.io/2023/07/02/CORS/">Web 資安系列（二）- CORS</a>。</p>
 </blockquote>
 <p>而 SOP 跟我們不陌生的 CORS 息息相關。我們可以簡單理解 CORS 是<strong>基於 SOP 的擴展機制</strong>，允許伺服器可以授予特定來源對資源的訪問權限。</p>
-<h3 id="可是為什麼要阻止跨來源訪問呢？"><a href="#可是為什麼要阻止跨來源訪問呢？" class="headerlink" title="可是為什麼要阻止跨來源訪問呢？"></a><font color=#d2691e>可是為什麼要阻止跨來源訪問呢？</font></h3><p>大家都可以互相拿資訊不是很好嗎，為什麼瀏覽器都要禁止跨來源訪問呢？ 因為安全性。</p>
+<h3 id="可是為什麼要阻止跨來源訪問呢？"><a href="#可是為什麼要阻止跨來源訪問呢？" class="headerlink" title="可是為什麼要阻止跨來源訪問呢？"></a><font color=#d2691e>可是為什麼要阻止跨來源訪問呢？</font></h3><p>大家可以互拿資訊不是很好嗎，為什麼瀏覽器都要禁止跨來源訪問呢？ 因為安全性。</p>
 <p>如果沒有了瀏覽器在外幫我們抵禦駭客，那公司內網就很容易受到攻擊。大家可以試想以下狀況，如果瀏覽器沒有了 SOP 機制會發生什麼事情？</p>
 <h4 id="簡易的攻擊舉例："><a href="#簡易的攻擊舉例：" class="headerlink" title="簡易的攻擊舉例："></a><font color=#6495ed>簡易的攻擊舉例：</font></h4><p>如果沒有了 SOP 機制，駭客就能像這樣簡單的拿到我們主機 localhost 的服務資訊。</p>
 <ol>
@@ -327,7 +327,7 @@
 <td align="center">否，協定不同</td>
 </tr>
 </tbody></table>
-<h4 id="DOM-同源政策的例外行為："><a href="#DOM-同源政策的例外行為：" class="headerlink" title="DOM 同源政策的例外行為："></a><font color=#6495ed>DOM 同源政策的例外行為：</font></h4><p>但你現在可能會有些疑惑，因為我的網站中明明會引入很多跨來源的資源（例如：圖片），那為什麼都是被允許的呢？<br>因為其實並不是所有的跨來源存取都是被禁止的，在某些特殊情況下是可被允許的。</p>
+<h4 id="DOM-同源政策的例外行為："><a href="#DOM-同源政策的例外行為：" class="headerlink" title="DOM 同源政策的例外行為："></a><font color=#6495ed>DOM 同源政策的例外行為：</font></h4><p>你現在可能會有些疑惑，因為我的網站中明明會引入很多跨來源的資源（例如：圖片），那為什麼都是被允許的呢？<br>因為其實並不是所有的跨來源存取都是被禁止的，在某些特殊情況下是可被允許的。</p>
 <ol>
 <li><p>跨來源寫入通常被允許：</p>
 <blockquote>
@@ -350,8 +350,8 @@
 <h3 id="Cookie-的同源政策："><a href="#Cookie-的同源政策：" class="headerlink" title="Cookie 的同源政策："></a><font color=#d2691e>Cookie 的同源政策：</font></h3><h4 id="如何判斷-Cookie-是同源的呢？"><a href="#如何判斷-Cookie-是同源的呢？" class="headerlink" title="如何判斷 Cookie 是同源的呢？"></a><font color=#6495ed>如何判斷 Cookie 是同源的呢？</font></h4><blockquote>
 <p>對 Cookie 的同源政策來說，只要 <strong>Domain（網域）</strong> 跟 <strong>Path（路徑）</strong>一致就會被視為同源。<br>而 <strong>Scheme（通訊協定）</strong>是根據此 Cookie 的 Secure 設定而定，用來判斷是否要 HTTPS 才能帶上 Cookie。</p>
 </blockquote>
-<p>在我們發出請求時，就會將與該請求同源的 Cookie 一起帶上。</p>
-<h4 id="子母網域是能共用-Cookie-的："><a href="#子母網域是能共用-Cookie-的：" class="headerlink" title="子母網域是能共用 Cookie 的："></a><font color=#6495ed>子母網域是能共用 Cookie 的：</font></h4><p>與 DOM 的同源政策不同，在 Cookie 中是可以做到 Domain 與 SubDomain 共用 Cookie 的！</p>
+<p>在我們發出請求時，瀏覽器就會將與該請求同源的 Cookie 一起帶上。</p>
+<h4 id="子母網域是能共用-Cookie-的："><a href="#子母網域是能共用-Cookie-的：" class="headerlink" title="子母網域是能共用 Cookie 的："></a><font color=#6495ed>子母網域是能共用 Cookie 的：</font></h4><p>與 DOM 的同源政策不同，在 Cookie 中是<strong>可以做到 Domain 與 SubDomain 共用 Cookie 的</strong>！</p>
 <p>當 Cookie 的 Domain 被設定為：</p>
 <blockquote>
 <p>此時的 Cookie 不會與子網域（例如：api.duke.tw）共用。</p>
@@ -363,7 +363,7 @@
 </blockquote>
 <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs text">Cookie: name=value; domain=.duke.tw<br></code></pre></td></tr></table></figure>
 
-<h4 id="潛在的安全問題：-1"><a href="#潛在的安全問題：-1" class="headerlink" title="潛在的安全問題："></a><font color=#6495ed>潛在的安全問題：</font></h4><p>若子網域設定為可以去修改母網域的 Cookie 的話，可能會被駭客所利用。</p>
+<h4 id="潛在的安全問題：-1"><a href="#潛在的安全問題：-1" class="headerlink" title="潛在的安全問題："></a><font color=#6495ed>潛在的安全問題：</font></h4><p>若 Cookie 設定成子母網域共用的話，可能會被駭客所利用，例如透過子網域去修改母網域的 Cookie。</p>
 
                 
               </div>
@@ -417,7 +417,7 @@
   <div class="license-box my-3">
     <div class="license-title">
       <div>Web 資安系列（一）- SOP</div>
-      <div>https://jamiechen-1230.github.io/2023/08/05/SOP/</div>
+      <div>https://jamiechen-1230.github.io/2023/07/01/SOP/</div>
     </div>
     <div class="license-meta">
       
@@ -429,7 +429,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>發布於</div>
-          <div>2023年8月5日</div>
+          <div>2023年7月1日</div>
         </div>
       
       
@@ -461,7 +461,7 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2023/08/06/CORS/" title="Web 資安系列（二）- CORS">
+                      <a href="/2023/07/02/CORS/" title="Web 資安系列（二）- CORS">
                         <i class="iconfont icon-arrowleft"></i>
                         <span class="hidden-mobile">Web 資安系列（二）- CORS</span>
                         <span class="visible-mobile">上一篇</span>

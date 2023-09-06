@@ -19,12 +19,12 @@
     <meta name="description" content="在介紹完 SOP 之後，不免俗的也要來講講 CORS（跨來源資源共用）是什麼，因為兩者間的關係密切，所以時常會一起被提出來講。關於 SOP 能參考我的另一篇文章：Web 資安系列（一）- SOP。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Web 資安系列（二）- CORS">
-<meta property="og:url" content="https://jamiechen-1230.github.io/2023/08/06/CORS/index.html">
+<meta property="og:url" content="https://jamiechen-1230.github.io/2023/07/02/CORS/index.html">
 <meta property="og:site_name" content="小小後端の冒險">
 <meta property="og:description" content="在介紹完 SOP 之後，不免俗的也要來講講 CORS（跨來源資源共用）是什麼，因為兩者間的關係密切，所以時常會一起被提出來講。關於 SOP 能參考我的另一篇文章：Web 資安系列（一）- SOP。">
 <meta property="og:locale" content="zh_TW">
-<meta property="article:published_time" content="2023-08-06T03:12:23.000Z">
-<meta property="article:modified_time" content="2023-08-30T13:39:26.865Z">
+<meta property="article:published_time" content="2023-07-01T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-09-06T13:13:16.244Z">
 <meta property="article:author" content="Duke">
 <meta property="article:tag" content="Security">
 <meta name="twitter:card" content="summary_large_image">
@@ -208,8 +208,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2023-08-06 11:12" pubdate>
-          2023年8月6日 上午
+        <time datetime="2023-07-02 00:00" pubdate>
+          2023年7月2日 凌晨
         </time>
       </span>
     
@@ -273,7 +273,7 @@
             
               <div class="markdown-body">
                 
-                <p>在介紹完 SOP 之後，不免俗的也要來講講 CORS（跨來源資源共用）是什麼，因為兩者間的關係密切，所以時常會一起被提出來講。<br>關於 SOP 能參考我的另一篇文章：<a target="_blank" rel="noopener" href="https://duke851230.github.io/2023/08/05/SOP/">Web 資安系列（一）- SOP</a>。</p>
+                <p>在介紹完 SOP 之後，不免俗的也要來講講 CORS（跨來源資源共用）是什麼，因為兩者間的關係密切，所以時常會一起被提出來講。<br>關於 SOP 能參考我的另一篇文章：<a target="_blank" rel="noopener" href="https://duke851230.github.io/2023/07/01/SOP/">Web 資安系列（一）- SOP</a>。</p>
 <span id="more"></span>
 
 <h2 id="先來說說什麼是-CORS？"><a href="#先來說說什麼是-CORS？" class="headerlink" title="先來說說什麼是 CORS？"></a>先來說說什麼是 CORS？</h2><h3 id="CORS-簡介："><a href="#CORS-簡介：" class="headerlink" title="CORS 簡介："></a><font color=#d2691e>CORS 簡介：</font></h3><blockquote>
@@ -285,7 +285,7 @@
 </blockquote>
 <p>CORS 是用來針對<strong>某些時候需要使用不同源請求</strong>而誕生的。簡單的說，當我們想要透過瀏覽器對 Server 發出<strong>跨域請求</strong>時，瀏覽器會跟 Server 溝通哪些類型的請求是你能接受的，如果發現這是不被接受的請求時，瀏覽器就不會將 Server 的響應回傳給我們。</p>
 <h3 id="什麼是跨源（Cross-Origin）？"><a href="#什麼是跨源（Cross-Origin）？" class="headerlink" title="什麼是跨源（Cross-Origin）？"></a><font color=#d2691e>什麼是跨源（Cross-Origin）？</font></h3><blockquote>
-<p>詳細介紹能參考我的另一篇文章：<a target="_blank" rel="noopener" href="https://duke851230.github.io/2023/08/05/SOP/">Web 資安系列（一）- SOP</a>。</p>
+<p>詳細介紹能參考我的另一篇文章：<a target="_blank" rel="noopener" href="https://duke851230.github.io/2023/07/01/SOP/">Web 資安系列（一）- SOP</a>。</p>
 </blockquote>
 <p>透過上述我們已經大約知道 CORS 的機制，我這邊再來跟大家講講要怎麼判斷請求是跨域的。主要是透過 Scheme（通訊協定）、Domain（網域）、Port（埠號）來判斷，只有三者完全一致才能算是同源的請求。  </p>
 <h2 id="觀念釐清："><a href="#觀念釐清：" class="headerlink" title="觀念釐清："></a>觀念釐清：</h2><h3 id="跨域請求是被誰給擋下的？"><a href="#跨域請求是被誰給擋下的？" class="headerlink" title="跨域請求是被誰給擋下的？"></a><font color=#d2691e>跨域請求是被誰給擋下的？</font></h3><p>跨源請求是被<font color=#FF0000><strong>瀏覽器</strong></font>限制的。當發出跨域請求後，<strong>請求照樣會被送到 Server 端</strong>，只是回傳的 Response 被瀏覽器給擋下，所以我們才拿不到值。</p>
@@ -393,7 +393,7 @@
   <div class="license-box my-3">
     <div class="license-title">
       <div>Web 資安系列（二）- CORS</div>
-      <div>https://jamiechen-1230.github.io/2023/08/06/CORS/</div>
+      <div>https://jamiechen-1230.github.io/2023/07/02/CORS/</div>
     </div>
     <div class="license-meta">
       
@@ -405,7 +405,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>發布於</div>
-          <div>2023年8月6日</div>
+          <div>2023年7月2日</div>
         </div>
       
       
@@ -437,7 +437,7 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2023/08/07/CSRF/" title="Web 資安系列（三）- CSRF">
+                      <a href="/2023/07/03/CSRF/" title="Web 資安系列（三）- CSRF">
                         <i class="iconfont icon-arrowleft"></i>
                         <span class="hidden-mobile">Web 資安系列（三）- CSRF</span>
                         <span class="visible-mobile">上一篇</span>
@@ -447,7 +447,7 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2023/08/05/SOP/" title="Web 資安系列（一）- SOP">
+                      <a href="/2023/07/01/SOP/" title="Web 資安系列（一）- SOP">
                         <span class="hidden-mobile">Web 資安系列（一）- SOP</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>

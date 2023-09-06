@@ -19,12 +19,12 @@
     <meta name="description" content="之前在求學階段就有聽過 XSS 攻擊，但一直沒去深入了解它是什麼，今天趁這個機會來學習學習。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Web 資安系列（四）- XSS">
-<meta property="og:url" content="https://jamiechen-1230.github.io/2023/08/08/XSS/index.html">
+<meta property="og:url" content="https://jamiechen-1230.github.io/2023/07/04/XSS/index.html">
 <meta property="og:site_name" content="小小後端の冒險">
 <meta property="og:description" content="之前在求學階段就有聽過 XSS 攻擊，但一直沒去深入了解它是什麼，今天趁這個機會來學習學習。">
 <meta property="og:locale" content="zh_TW">
-<meta property="article:published_time" content="2023-08-08T08:34:53.000Z">
-<meta property="article:modified_time" content="2023-08-30T14:08:40.930Z">
+<meta property="article:published_time" content="2023-07-03T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-09-06T13:13:16.244Z">
 <meta property="article:author" content="Duke">
 <meta property="article:tag" content="Security">
 <meta name="twitter:card" content="summary_large_image">
@@ -208,8 +208,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2023-08-08 16:34" pubdate>
-          2023年8月8日 下午
+        <time datetime="2023-07-04 00:00" pubdate>
+          2023年7月4日 凌晨
         </time>
       </span>
     
@@ -288,7 +288,7 @@
 <p>全名為 Cross-Site Scripting，跨站腳本攻擊。</p>
 </blockquote>
 <p>XSS 多年來一直都是位列 OWASP 網頁安全漏洞的前十名。因此了解它對我們網頁開發者來說是非常重要的，且這不僅僅是前端的問題，後端也要做好相對應的防護才行。</p>
-<p>通常 Attacker 是對<font color=#FF0000><strong>網站的輸入點</strong></font>（例如表單、留言板、URL 等）進行攻擊。<br>簡單的說，XSS 就是透過將<strong>惡意腳本</strong>埋進 Website 中，之後再誘使 Victim 去瀏覽頁面，此時 Website 在加載的同時，惡意腳本也會跟著自動執行，導致 Victim 的機密資料洩漏（例如竊取 Cookie、劫持 Session 等）。</p>
+<p>通常 Attacker 是對<font color=#FF0000><strong>網站的輸入點</strong></font>（例如表單、留言板、URL 等）進行攻擊。<br>簡單的說，XSS 就是透過將<strong>惡意腳本</strong>埋進 Website 中，之後再誘使 Victim 去瀏覽頁面，當 Website 在加載的同時，惡意腳本也會跟著自動執行，導致 Victim 的機密資料洩漏（例如竊取 Cookie、劫持 Session 等）。</p>
 <h2 id="XSS-三大種類："><a href="#XSS-三大種類：" class="headerlink" title="XSS 三大種類："></a>XSS 三大種類：</h2><h3 id="反射型-XSS（Reflected-XSS）："><a href="#反射型-XSS（Reflected-XSS）：" class="headerlink" title="反射型 XSS（Reflected XSS）："></a><font color=#d2691e>反射型 XSS（Reflected XSS）：</font></h3><p>反射型 XSS 是發生在<font color=#FF0000><strong>前後端未分離</strong></font>的情況下。因為<strong>後端沒有驗證前端傳來的輸入</strong>，所以後端在渲染 HTML 時，可能就會將夾帶惡意代碼的輸入一併渲染進去，此時只要回傳給前端並加載頁面後，就會遭受攻擊。</p>
 <h4 id="攻擊手法："><a href="#攻擊手法：" class="headerlink" title="攻擊手法："></a><font color=#6495ed>攻擊手法：</font></h4><p>通常是將惡意腳本藏在網址列的 <strong>GET 參數</strong>中，然後透過社交工程信件讓 Victim 誤點網址，這樣就有可能被盜取機密資訊。</p>
 <h4 id="一個簡單的範例："><a href="#一個簡單的範例：" class="headerlink" title="一個簡單的範例："></a><font color=#6495ed>一個簡單的範例：</font></h4><blockquote>
@@ -448,7 +448,7 @@ Website-&gt;&gt;Attacker: 7.
   <div class="license-box my-3">
     <div class="license-title">
       <div>Web 資安系列（四）- XSS</div>
-      <div>https://jamiechen-1230.github.io/2023/08/08/XSS/</div>
+      <div>https://jamiechen-1230.github.io/2023/07/04/XSS/</div>
     </div>
     <div class="license-meta">
       
@@ -460,7 +460,7 @@ Website-&gt;&gt;Attacker: 7.
       
         <div class="license-meta-item license-meta-date">
           <div>發布於</div>
-          <div>2023年8月8日</div>
+          <div>2023年7月4日</div>
         </div>
       
       
@@ -492,11 +492,17 @@ Website-&gt;&gt;Attacker: 7.
                   <article class="post-prev col-6">
                     
                     
+                      <a href="/2023/07/05/CSP/" title="Web 資安系列（五）- CSP">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Web 資安系列（五）- CSP</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2023/08/07/CSRF/" title="Web 資安系列（三）- CSRF">
+                      <a href="/2023/07/03/CSRF/" title="Web 資安系列（三）- CSRF">
                         <span class="hidden-mobile">Web 資安系列（三）- CSRF</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
