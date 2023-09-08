@@ -16,15 +16,15 @@
   <meta name="author" content="Duke">
   <meta name="keywords" content="">
   
-    <meta name="description" content="覆寫（Override）、多載（Overload）與多型（Polymorphism）一直新手的一大夢魘。就算是工作了幾年的人還是會被這些相像的名詞給搞混，所以本篇章就來聊聊覆寫與多載。若想了解多型的人，可以參考我的另一篇文章：Python 與物件導向（二）：類別的三大特性。">
+    <meta name="description" content="雖然在 Python 中，沒有介面（Interface）只有抽象類別（Abstract class），但我還是來跟大家分享一下這兩者有什麼異同。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Python 與物件導向（三）：覆寫與多載">
-<meta property="og:url" content="https://jamiechen-1230.github.io/2023/08/03/python-oop-override-overload/index.html">
+<meta property="og:title" content="Python 與物件導向（四）：抽象類別與介面">
+<meta property="og:url" content="https://jamiechen-1230.github.io/2023/08/04/python-oop-abstract-interface/index.html">
 <meta property="og:site_name" content="小小後端の冒險">
-<meta property="og:description" content="覆寫（Override）、多載（Overload）與多型（Polymorphism）一直新手的一大夢魘。就算是工作了幾年的人還是會被這些相像的名詞給搞混，所以本篇章就來聊聊覆寫與多載。若想了解多型的人，可以參考我的另一篇文章：Python 與物件導向（二）：類別的三大特性。">
+<meta property="og:description" content="雖然在 Python 中，沒有介面（Interface）只有抽象類別（Abstract class），但我還是來跟大家分享一下這兩者有什麼異同。">
 <meta property="og:locale" content="zh_TW">
-<meta property="article:published_time" content="2023-08-02T16:00:00.000Z">
-<meta property="article:modified_time" content="2023-09-08T13:17:53.827Z">
+<meta property="article:published_time" content="2023-08-03T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-09-08T13:17:53.815Z">
 <meta property="article:author" content="Duke">
 <meta property="article:tag" content="Python">
 <meta property="article:tag" content="OOP">
@@ -32,7 +32,7 @@
   
   
   
-  <title>Python 與物件導向（三）：覆寫與多載 - 小小後端の冒險</title>
+  <title>Python 與物件導向（四）：抽象類別與介面 - 小小後端の冒險</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -198,7 +198,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="Python 與物件導向（三）：覆寫與多載"></span>
+            <span id="subtitle" data-typed-text="Python 與物件導向（四）：抽象類別與介面"></span>
           
         </div>
 
@@ -209,8 +209,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2023-08-03 00:00" pubdate>
-          2023年8月3日 凌晨
+        <time datetime="2023-08-04 00:00" pubdate>
+          2023年8月4日 凌晨
         </time>
       </span>
     
@@ -221,7 +221,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1.8k 字
+          2.2k 字
         
       </span>
     
@@ -232,7 +232,7 @@
         
         
         
-          16 分鐘
+          18 分鐘
         
       </span>
     
@@ -269,39 +269,72 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">Python 與物件導向（三）：覆寫與多載</h1>
+            <h1 id="seo-header">Python 與物件導向（四）：抽象類別與介面</h1>
             
             
               <div class="markdown-body">
                 
-                <p>覆寫（Override）、多載（Overload）與多型（Polymorphism）一直新手的一大夢魘。就算是工作了幾年的人還是會被這些相像的名詞給搞混，所以本篇章就來聊聊覆寫與多載。<br>若想了解多型的人，可以參考我的另一篇文章：<a target="_blank" rel="noopener" href="https://duke851230.github.io/2023/08/02/python-oop-three-principles/">Python 與物件導向（二）：類別的三大特性</a>。</p>
+                <p>雖然在 Python 中，<strong>沒有介面（Interface）只有抽象類別（Abstract class）</strong>，但我還是來跟大家分享一下這兩者有什麼異同。</p>
 <span id="more"></span>
 
-<h2 id="多載（Overload）："><a href="#多載（Overload）：" class="headerlink" title="多載（Overload）："></a>多載（Overload）：</h2><blockquote>
-<p>先在開頭聲明 <font color=#FF0000><strong>Python 是不能做到像 Java 那樣的 Overload</strong></font> 的。因為如果類中有多個同名方法，Python 只會讀最後一個，其他的會被覆蓋掉。</p>
-</blockquote>
-<p>先來說說在別的語言中的 Overload 是指什麼。<br>在 Java 中，Overload 指的是在一個類別裡，<strong>定義多個名稱相同但參數不同的方法</strong>。之後類別實例呼叫方法時，會根據調用所帶的參數數量和型別，來判定要調用哪個同名方法。</p>
-<h3 id="程式範例："><a href="#程式範例：" class="headerlink" title="程式範例："></a><font color=#d2691e>程式範例：</font></h3><p>如果我調用 <code>setCar()</code> 的參數只帶了一個 String 時，它會走第一個方法，並認為這個參數值是車名，其他以此類推。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Car</span>&#123;<br>	<span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setCar</span><span class="hljs-params">(String name)</span>&#123;<br>		System.out.printf(<span class="hljs-string">&quot;車名: %s&quot;</span>, name);<br>	&#125;<br>	<span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setCar</span><span class="hljs-params">(<span class="hljs-type">int</span> dollar)</span>&#123;<br>		System.out.printf(<span class="hljs-string">&quot;價錢: %d&quot;</span>, dollar);<br>	&#125;<br>	<span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setCar</span><span class="hljs-params">(String name, <span class="hljs-type">int</span> dollar)</span>&#123;<br>		System.out.printf(<span class="hljs-string">&quot;車名: %s 價錢: %d&quot;</span>, name, dollar);<br>	&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
 
-<h3 id="延伸閱讀：Python-如何做到類似-Overload-的功能？"><a href="#延伸閱讀：Python-如何做到類似-Overload-的功能？" class="headerlink" title="延伸閱讀：Python 如何做到類似 Overload 的功能？"></a><font color=#d2691e>延伸閱讀：Python 如何做到類似 Overload 的功能？</font></h3><blockquote>
-<p>可變參數類型：因為 Python 是動態語言，參數不會預先定義類型。<br>可變參數個數：可利用 <code>Optional Argument</code> 或 <code>*args</code> 或 <code>**kwargs</code> 的機制來達成類似效果。</p>
+<h2 id="先來聊聊為什麼需要抽象類別和介面？"><a href="#先來聊聊為什麼需要抽象類別和介面？" class="headerlink" title="先來聊聊為什麼需要抽象類別和介面？"></a>先來聊聊為什麼需要抽象類別和介面？</h2><blockquote>
+<p>這邊我會先用「抽象」來統一代表「抽象類別」和「介面」兩者。</p>
 </blockquote>
-<p>因為 <strong>Overload 要解決的問題是函數要能接受「可變參數類型」與「可變參數個數」</strong>，而 Python 因本身的機制不會遇到這些問題。 </p>
-<p>這邊用 <code>Optional Argument</code>（默認參數）來舉例，讓 Python 做到類似多載的功能：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> typing <span class="hljs-keyword">import</span> <span class="hljs-type">Optional</span><br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Person</span>:<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">hello</span>(<span class="hljs-params">self, name: <span class="hljs-built_in">str</span>, age: <span class="hljs-type">Optional</span>[<span class="hljs-built_in">int</span>]=<span class="hljs-literal">None</span></span>):<br>        <span class="hljs-keyword">if</span> age <span class="hljs-keyword">is</span> <span class="hljs-literal">None</span>:<br>            <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;My name is <span class="hljs-subst">&#123;name&#125;</span>.&quot;</span>)<br>        <span class="hljs-keyword">else</span>:<br>            <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;My name is <span class="hljs-subst">&#123;name&#125;</span>, I&#x27;m <span class="hljs-subst">&#123;age&#125;</span> years old.&quot;</span>)<br><br><br>duke: Person = Person()<br>duke.hello(<span class="hljs-string">&quot;duke&quot;</span>)  <span class="hljs-comment"># My name is duke.</span><br>duke.hello(<span class="hljs-string">&quot;duke&quot;</span>, <span class="hljs-number">28</span>)  <span class="hljs-comment"># My name is duke, I&#x27;m 28 years old.</span><br></code></pre></td></tr></table></figure>
+<p>我們先將「抽象」想像成現實世界中的「證照」。</p>
+<p>假設我們現在是一名面試官，當我們面對上百件的履歷時，要怎麼快速篩選出一批不錯的苗子呢？<br>我們大多會從「是否有專業證照」下手，因為這些「證照」就好像一種標誌，讓我們知道面試者具備這一項技能（<strong>雖然不知道他實際用的好不好</strong>），但至少比沒有證照的面試者值得相信多了。</p>
+<p>而在程式中也是一樣的，工程師可以透過這個類別實做了哪些介面、繼承哪些抽象類別，就能大概判斷出它能做到哪些功能。但這也跟證照例子一樣，我們<strong>不知道他是怎麼實現的、寫的好不好</strong>，但依然能讓工程師理解該類別具備哪些功能。</p>
+<p>因為「抽象」會帶有一定的<strong>強制性</strong>，所以我們可以用它來要求我們的類別必須具備哪些功能。就像是我們當面試官時可以要求面試者一定要有哪張證照才行，因為我們的職缺需要這項技能。</p>
+<h3 id="抽象的優缺點："><a href="#抽象的優缺點：" class="headerlink" title="抽象的優缺點："></a><font color=#d2691e>抽象的優缺點：</font></h3><h4 id="優點："><a href="#優點：" class="headerlink" title="優點："></a><font color=#6495ed>優點：</font></h4><ol>
+<li>可以確保在子類中具備必要方法，也能讓工程師更容易理解子類有什麼功能。</li>
+<li>降低<strong>類別間的耦合</strong>。相較於一連串的繼承（父類 -&gt; 子類 -&gt; 孫子類…），將要實現的功能拆分出多個小介面，子類再依照要具備的功能分別去 implements 它，這樣就不太會跟其他類別有高耦合。</li>
+<li>可搭配「多型」使用，各子類可以<strong>以不同的方式</strong>實現相同的抽象方法，以此達到多型。<blockquote>
+<p>若想了解多型的人，可以參考我的另一篇文章：<a target="_blank" rel="noopener" href="https://duke851230.github.io/2023/08/02/python-oop-three-principles/">Python 與物件導向（二）：類別的三大特性</a>。</p>
+</blockquote>
+</li>
+</ol>
+<h4 id="缺點："><a href="#缺點：" class="headerlink" title="缺點："></a><font color=#6495ed>缺點：</font></h4><ol>
+<li>不能直接實例化出物件，須透過子類實現抽象方法後才能實例化，會<strong>增加程式碼量</strong>。</li>
+<li>如果設計不當，可能會使代碼更難以理解和維護，<strong>增加程式複雜性</strong>。</li>
+<li>當「抽象」需要進行修改時，子類也須做相對應的更改，可能會增加一些開發成本。</li>
+</ol>
+<h2 id="介面（Interface）："><a href="#介面（Interface）：" class="headerlink" title="介面（Interface）："></a>介面（Interface）：</h2><blockquote>
+<p>因為 Python 沒有介面，所以就先用 <font color=#FF0000><strong>Java</strong></font> 來當作範例。</p>
+</blockquote>
+<p>介面就像合約一樣，用來定義子類應該具備的方法。介面僅定義了<strong>方法名、參數和類型，不提供方法的實現</strong>，也可在介面中定義<strong>常數</strong>供子類調用。</p>
+<h3 id="程式範例："><a href="#程式範例：" class="headerlink" title="程式範例："></a><font color=#d2691e>程式範例：</font></h3><p>這邊在 Shape 介面中定義了計算面積的方法（<code>show_area()</code>），所以 implements Shape 介面的圖形類別，都必須要去實現 <code>show_area()</code> 的具體內容。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">interface</span> <span class="hljs-title class_">Shape</span> &#123;<br>   <span class="hljs-keyword">final</span> <span class="hljs-type">double</span> <span class="hljs-variable">PI</span> <span class="hljs-operator">=</span> <span class="hljs-number">3.14</span>;<br>   <span class="hljs-keyword">public</span> <span class="hljs-keyword">abstract</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">show_area</span><span class="hljs-params">()</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Circle</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">Shape</span> &#123;<br>   <span class="hljs-type">double</span> radius;<br>   <br>   <span class="hljs-keyword">public</span> <span class="hljs-title function_">Circle</span><span class="hljs-params">(<span class="hljs-type">double</span> r)</span> &#123;<br>       radius=r;<br>   &#125;<br>   <br>   <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">show_area</span><span class="hljs-params">()</span> &#123;<br>       System.out.println(<span class="hljs-string">&quot;area = &quot;</span> + PI * radius * radius);<br>   &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
 
 
+<h2 id="抽象類別（Abstract-class）："><a href="#抽象類別（Abstract-class）：" class="headerlink" title="抽象類別（Abstract class）："></a>抽象類別（Abstract class）：</h2><blockquote>
+<p>不過為什麼 Java 要兩種都要用呢，感覺抽象類別比介面靈活很多阿？<br>因為抽象類別是用「繼承」的，但 Java 只能單一繼承；而介面是用「實做」的，一個類別可以實做多重介面。</p>
+</blockquote>
+<p>抽象類別跟介面一樣，可以在其中定義抽象方法（僅定義方法名、參數和類型，不提供方法的實現）和常數。除了上述之外，抽象類別也能包含<strong>具體方法</strong>（有具體實現的方法）和<strong>實例屬性</strong>，其實可以簡單的把抽象類別看做是一種<strong>能定義抽象方法的一般類別</strong>。</p>
+<h3 id="程式範例：-1"><a href="#程式範例：-1" class="headerlink" title="程式範例："></a><font color=#d2691e>程式範例：</font></h3><p>因為所有動物都會跑，所以可以直接在抽象類別定義 <code>run()</code> 的具體方法，但因為每個動物的叫聲都不一樣，所以只定義了抽象的 <code>say()</code> 方法來讓子類去實做。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> abc <span class="hljs-keyword">import</span> ABC, abstractmethod<br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Animal</span>(<span class="hljs-title class_ inherited__">ABC</span>):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">run</span>(<span class="hljs-params">self</span>) -&gt; <span class="hljs-literal">None</span>:<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;I&#x27;m running.&quot;</span>)<br><br><span class="hljs-meta">    @abstractmethod</span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">say</span>(<span class="hljs-params">self</span>) -&gt; <span class="hljs-literal">None</span>: <br>        <span class="hljs-keyword">pass</span><br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Cat</span>(<span class="hljs-title class_ inherited__">Animal</span>):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">say</span>(<span class="hljs-params">self</span>) -&gt; <span class="hljs-literal">None</span>: <br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;喵喵喵！&quot;</span>)<br><br><br>cat: Cat = Cat()<br>cat.run()  <span class="hljs-comment"># I&#x27;m running.</span><br>cat.say()  <span class="hljs-comment"># 喵喵喵！</span><br></code></pre></td></tr></table></figure>
 
-<h2 id="覆寫（Override）："><a href="#覆寫（Override）：" class="headerlink" title="覆寫（Override）："></a>覆寫（Override）：</h2><blockquote>
-<p>通常使用多型（Polymorphism）時，常常會伴隨著覆寫（Override）。<br>若想了解多型的人，可以參考我的另一篇文章：<a target="_blank" rel="noopener" href="https://duke851230.github.io/2023/08/02/python-oop-three-principles/">Python 與物件導向（二）：類別的三大特性</a>。</p>
+
+<h2 id="抽象類別-vs-介面："><a href="#抽象類別-vs-介面：" class="headerlink" title="抽象類別 vs 介面："></a>抽象類別 vs 介面：</h2><blockquote>
+<p>以下是用 <font color=#FF0000><strong>Java</strong></font> 這種兩者都有的語言來進行比較。</p>
 </blockquote>
-<p>Override 一定是搭配著繼承使用的。指的是<strong>子類可以定義一個與父類方法同名的方法</strong>，當<strong>子類實例</strong>調用該方法時，該方法會覆蓋掉父類方法的內容，讓子類可以擁有不同於父類的行為。</p>
-<blockquote>
-<p>Override 時要注意<strong>參數個數不可變</strong>，若有用 Type Hint 的話，類型也不要變，以免造成之後難以維護！</p>
+<h3 id="相同點："><a href="#相同點：" class="headerlink" title="相同點："></a><font color=#d2691e>相同點：</font></h3><p>抽象類別與介面兩者都<strong>無法直接實體化</strong>，且其子類<strong>須實現抽象方法</strong>。</p>
+<h3 id="相異點："><a href="#相異點：" class="headerlink" title="相異點："></a><font color=#d2691e>相異點：</font></h3><h4 id="可定義的東西："><a href="#可定義的東西：" class="headerlink" title="可定義的東西："></a><font color=#6495ed>可定義的東西：</font></h4><ul>
+<li>介面：只能定義<strong>抽象方法</strong>（僅定義方法名、參數和類型，不提供方法的實現）與<strong>常數</strong></li>
+<li>抽象類別：除了抽象方法與常數，還可定義<strong>具體方法</strong>和<strong>實例屬性</strong></li>
+</ul>
+<h4 id="繼承方式："><a href="#繼承方式：" class="headerlink" title="繼承方式："></a><font color=#6495ed>繼承方式：</font></h4><blockquote>
+<p>備註：因 Python 是允許多重繼承的，所以可以繼承多個抽象類別，這可能也是 Python 不需要介面的原因。</p>
 </blockquote>
-<h3 id="程式範例：-1"><a href="#程式範例：-1" class="headerlink" title="程式範例："></a><font color=#d2691e>程式範例：</font></h3><p>我們的 Dog 與 Cat 類別都覆寫了 Animal 的 <code>say()</code> 方法。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> abc <span class="hljs-keyword">import</span> ABC, abstractmethod<br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Animal</span>(<span class="hljs-title class_ inherited__">ABC</span>):<br><span class="hljs-meta">    @abstractmethod</span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">say</span>(<span class="hljs-params">self</span>) -&gt; <span class="hljs-literal">None</span>:<br>        <span class="hljs-keyword">pass</span><br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Dog</span>(<span class="hljs-title class_ inherited__">Animal</span>):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">say</span>(<span class="hljs-params">self</span>) -&gt; <span class="hljs-literal">None</span>:<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;汪汪汪！&quot;</span>)<br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Cat</span>(<span class="hljs-title class_ inherited__">Animal</span>):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">say</span>(<span class="hljs-params">self</span>) -&gt; <span class="hljs-literal">None</span>:<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;喵喵喵！&quot;</span>)<br><br>Dog().say()  <span class="hljs-comment"># 汪汪汪！</span><br>Cat().say()  <span class="hljs-comment"># 喵喵喵！</span><br></code></pre></td></tr></table></figure>
+<ul>
+<li>介面：透過「實做」的方式，一個類別可以<strong>實做多個介面</strong></li>
+<li>抽象類別：透過「繼承」的方式，只能單一繼承</li>
+</ul>
+<h4 id="用途："><a href="#用途：" class="headerlink" title="用途："></a><font color=#6495ed>用途：</font></h4><ul>
+<li>介面：通常是用 <strong>has-a</strong> 的概念，子類依據需要的功能去實做對應的介面</li>
+<li>抽象類別：通常是用 <strong>is-a</strong> 的概念，就像是繼承一般類別一樣，只是還須實現抽象類別的抽象方法</li>
+</ul>
+
                 
               </div>
             
@@ -355,8 +388,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>Python 與物件導向（三）：覆寫與多載</div>
-      <div>https://jamiechen-1230.github.io/2023/08/03/python-oop-override-overload/</div>
+      <div>Python 與物件導向（四）：抽象類別與介面</div>
+      <div>https://jamiechen-1230.github.io/2023/08/04/python-oop-abstract-interface/</div>
     </div>
     <div class="license-meta">
       
@@ -368,7 +401,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>發布於</div>
-          <div>2023年8月3日</div>
+          <div>2023年8月4日</div>
         </div>
       
       
@@ -400,9 +433,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2023/08/04/python-oop-abstract-interface/" title="Python 與物件導向（四）：抽象類別與介面">
+                      <a href="/2023/08/05/python-oop-solid/" title="Python 與物件導向（五）：SOLID 原則">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Python 與物件導向（四）：抽象類別與介面</span>
+                        <span class="hidden-mobile">Python 與物件導向（五）：SOLID 原則</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -410,8 +443,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2023/08/02/python-oop-three-principles/" title="Python 與物件導向（二）：類別的三大特性">
-                        <span class="hidden-mobile">Python 與物件導向（二）：類別的三大特性</span>
+                      <a href="/2023/08/03/python-oop-override-overload/" title="Python 與物件導向（三）：覆寫與多載">
+                        <span class="hidden-mobile">Python 與物件導向（三）：覆寫與多載</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
