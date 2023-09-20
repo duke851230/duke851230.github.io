@@ -16,22 +16,23 @@
   <meta name="author" content="Duke">
   <meta name="keywords" content="">
   
-    <meta name="description" content="接下來和大家分享同樣位居 OWASP 網頁安全漏洞的前十名的 SQL Injection（SQL 注入）。雖然防範的方式很簡單，但還是有很多新手會不小心忽略了它，所以在此跟大家分享一下它是什麼與如何防護。">
+    <meta name="description" content="在前面的文章中，可能都有隱約提到「濫用繼承」會造成程式碼難以維護。所以這邊將提供另外一種思考模式，讓我們可以寫出易於擴展的程式碼！">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Web 資安系列（六）- SQL Injection">
-<meta property="og:url" content="https://jamiechen-1230.github.io/2023/07/06/SQL_Injection/index.html">
+<meta property="og:title" content="Python 與物件導向（六）：繼承 vs 組合">
+<meta property="og:url" content="https://jamiechen-1230.github.io/2023/08/06/python-oop-inheritance-composition/index.html">
 <meta property="og:site_name" content="小小後端の冒險">
-<meta property="og:description" content="接下來和大家分享同樣位居 OWASP 網頁安全漏洞的前十名的 SQL Injection（SQL 注入）。雖然防範的方式很簡單，但還是有很多新手會不小心忽略了它，所以在此跟大家分享一下它是什麼與如何防護。">
+<meta property="og:description" content="在前面的文章中，可能都有隱約提到「濫用繼承」會造成程式碼難以維護。所以這邊將提供另外一種思考模式，讓我們可以寫出易於擴展的程式碼！">
 <meta property="og:locale" content="zh_TW">
-<meta property="article:published_time" content="2023-07-05T16:00:00.000Z">
+<meta property="article:published_time" content="2023-08-05T16:00:00.000Z">
 <meta property="article:modified_time" content="2023-09-20T05:15:10.588Z">
 <meta property="article:author" content="Duke">
-<meta property="article:tag" content="Security">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="OOP">
 <meta name="twitter:card" content="summary_large_image">
   
   
   
-  <title>Web 資安系列（六）- SQL Injection - 小小後端の冒險</title>
+  <title>Python 與物件導向（六）：繼承 vs 組合 - 小小後端の冒險</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -197,7 +198,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="Web 資安系列（六）- SQL Injection"></span>
+            <span id="subtitle" data-typed-text="Python 與物件導向（六）：繼承 vs 組合"></span>
           
         </div>
 
@@ -208,8 +209,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2023-07-06 00:00" pubdate>
-          2023年7月6日 凌晨
+        <time datetime="2023-08-06 00:00" pubdate>
+          2023年8月6日 凌晨
         </time>
       </span>
     
@@ -220,7 +221,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          2.4k 字
+          1.9k 字
         
       </span>
     
@@ -231,7 +232,7 @@
         
         
         
-          21 分鐘
+          17 分鐘
         
       </span>
     
@@ -268,76 +269,56 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">Web 資安系列（六）- SQL Injection</h1>
+            <h1 id="seo-header">Python 與物件導向（六）：繼承 vs 組合</h1>
             
             
               <div class="markdown-body">
                 
-                <p>接下來和大家分享同樣位居 OWASP 網頁安全漏洞的前十名的 SQL Injection（SQL 注入）。雖然防範的方式很簡單，但還是有很多新手會不小心忽略了它，所以在此跟大家分享一下它是什麼與如何防護。</p>
+                <p>在前面的文章中，可能都有隱約提到「濫用繼承」會造成程式碼難以維護。所以這邊將提供另外一種思考模式，讓我們可以寫出易於擴展的程式碼！</p>
 <span id="more"></span>
 
 
-<h2 id="先來講講什麼是-SQL-Injection？"><a href="#先來講講什麼是-SQL-Injection？" class="headerlink" title="先來講講什麼是 SQL Injection？"></a>先來講講什麼是 SQL Injection？</h2><h3 id="SQL-Injection-簡介："><a href="#SQL-Injection-簡介：" class="headerlink" title="SQL Injection 簡介："></a><font color=#d2691e>SQL Injection 簡介：</font></h3><blockquote>
-<p>SQL Injection 中文為 SQL 注入式攻擊。</p>
+<h2 id="先來個簡單介紹："><a href="#先來個簡單介紹：" class="headerlink" title="先來個簡單介紹："></a>先來個簡單介紹：</h2><p>可能你們常常會聽到有人在說「<strong>少用繼承，多用組合</strong>」或是「<strong>以組合代替繼承</strong>」。<br>那究竟什麼是繼承？什麼是組合呢？其實它們都是用來描述<strong>類別之間的關係</strong>，只是思考的方式不同而已。</p>
+<h3 id="繼承（inheritance）："><a href="#繼承（inheritance）：" class="headerlink" title="繼承（inheritance）："></a><font color=#d2691e>繼承（inheritance）：</font></h3><blockquote>
+<p>繼承是一種 <strong><code>is-a</code></strong> 的關係。<br>若想要更加深入，可以參考我的另一篇文章：<a target="_blank" rel="noopener" href="https://duke851230.github.io/2023/08/02/python-oop-three-principles/">Python 與物件導向（二）：類別的三大特性</a>。</p>
 </blockquote>
-<p>通常發生在應用程序<strong>未對使用者的輸入做驗證</strong>的情況下。駭客通過在輸入字段中插入惡意 SQL 語句，讓資料庫誤以為該指令是合法操作而執行，資料庫就因此遭到入侵。</p>
-<h3 id="SQL-Injection-的攻擊原理："><a href="#SQL-Injection-的攻擊原理：" class="headerlink" title="SQL Injection 的攻擊原理："></a><font color=#d2691e>SQL Injection 的攻擊原理：</font></h3><blockquote>
-<p>SQL 是後端用來與資料庫溝通的程式語言。</p>
+<p>繼承之前已經有介紹過了，這邊就只簡單的講講概念。<br>如果用現實世界來舉例，我們會說「吉普車」是一種「車」，這就是一種<strong>「<code>is-a</code>」</strong>的思考模式。在程式中我們就會定義一個名為「車」的父類別，然後可以透過繼承去實現多個子類，如「吉普車」、「跑車」等。</p>
+<h3 id="組合（composition）："><a href="#組合（composition）：" class="headerlink" title="組合（composition）："></a><font color=#d2691e>組合（composition）：</font></h3><blockquote>
+<p>組合是一種 <strong><code>has-a</code></strong> 的關係。</p>
 </blockquote>
-<p>SQL Injection 是駭客透過在原 SQL 語句中插入惡意代碼，進而<strong>改變原語句的語意</strong>並達到入侵之目的。通常駭客是利用 SQL 的以下特性來竄改語意：</p>
-<ol>
-<li><p><font color=#6495ed><strong>註解：</strong></font></p>
-<p>駭客可利用註解（<code>-- &#123;annotation&#125;</code> 或 <code>/* &#123;annotation&#125; */</code>）來取消原語句的行為，並插入惡意語句來完成攻擊。<br>以下範例是駭客透過註解繞過密碼驗證：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 後端資安漏洞：</span><br><span class="hljs-comment"># user 與 pwd 是使用者的輸入</span><br>sql = <span class="hljs-string">&quot;SELECT * FROM users WHERE username=&#x27;&#123;user&#125;&#x27; AND password=&#x27;&#123;pwd&#125;&#x27;;&quot;</span>.<span class="hljs-built_in">format</span>(user=user, pwd=pwd)<br></code></pre></td></tr></table></figure>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-comment">/*</span><br><span class="hljs-comment">正常情況： user = &quot;admin&quot;, pwd = &quot;admin123&quot;</span><br><span class="hljs-comment">*/</span><br><span class="hljs-keyword">SELECT</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">FROM</span> users <span class="hljs-keyword">WHERE</span> (username<span class="hljs-operator">=</span><span class="hljs-string">&#x27;admin&#x27;</span>) <span class="hljs-keyword">AND</span> (password<span class="hljs-operator">=</span><span class="hljs-string">&#x27;admin123&#x27;</span>);<br></code></pre></td></tr></table></figure>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-comment">/*</span><br><span class="hljs-comment">駭客攻擊： user = &quot;admin&#x27;; --&quot;, pwd = &quot;&quot;</span><br><span class="hljs-comment">*/</span><br><span class="hljs-keyword">SELECT</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">FROM</span> users <span class="hljs-keyword">WHERE</span> username<span class="hljs-operator">=</span><span class="hljs-string">&#x27;admin&#x27;</span>; <span class="hljs-comment">--&#x27; AND password=&#x27;&#x27;;</span><br></code></pre></td></tr></table></figure>
-</li>
-<li><p><font color=#6495ed><strong>單引號：</strong></font></p>
+<p>組合則是一種比較複雜的思考方式。以上述繼承的例子來說，我們就不會再把「車」當成一個完整的實體，而是會將它拆解成「輪子」、「引擎」、「板金」等等，然後再把它們當成零件，組成一台車子。</p>
+<p>在程式中也是如此，<strong>組合就是指將一個類別的物件作為另一個類別的屬性</strong>，也就是說，一個類別會包含多個其他類別的物件。如果還是不清楚的話沒關係，我們來看看一個簡單的例子。</p>
+<h4 id="簡單範例："><a href="#簡單範例：" class="headerlink" title="簡單範例："></a><font color=#6495ed><strong>簡單範例：</strong></font></h4><blockquote>
+<p>我們這邊先假設「車子」只會有「輪子」和「引擎」兩個零件，不然真的太多了XD</p>
+</blockquote>
+<p>假設我們現在要建一個「吉普車」類，我們就會先想吉普車可能會有大顆的輪子和較有力的引擎，因為要拿來跑比較崎嶇的地形。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> abc <span class="hljs-keyword">import</span> ABC, abstractmethod<br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Wheel</span>(<span class="hljs-title class_ inherited__">ABC</span>):<br><span class="hljs-meta">    @abstractmethod</span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">rotate</span>(<span class="hljs-params">self</span>) -&gt; <span class="hljs-literal">None</span>: <br>        <span class="hljs-keyword">pass</span><br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Engine</span>(<span class="hljs-title class_ inherited__">ABC</span>):<br><span class="hljs-meta">    @abstractmethod</span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">start</span>(<span class="hljs-params">self</span>) -&gt; <span class="hljs-literal">None</span>: <br>        <span class="hljs-keyword">pass</span><br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">BigWheel</span>(<span class="hljs-title class_ inherited__">Wheel</span>):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">rotate</span>(<span class="hljs-params">self</span>) -&gt; <span class="hljs-literal">None</span>: <br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;用大輪子跑跑跑&quot;</span>)<br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">PowerfulEngine</span>(<span class="hljs-title class_ inherited__">Engine</span>):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">start</span>(<span class="hljs-params">self</span>) -&gt; <span class="hljs-literal">None</span>: <br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;引擎啟動！&quot;</span>)<br></code></pre></td></tr></table></figure>
+<p>有了零件之後，我們就能來建「吉普車」了。透過將零件當作「吉普車」的屬性來插入，就能建造出獨一無二的吉普車了。</p>
+<p>這樣的好處是如果「跑車」也要用到我們的 <code>PowerfulEngine</code>，它就能直接拿去用，減少重複的代碼。而且因為我們的零件是在要建立車子時才選擇，而不是直接寫死，這樣能降低類別間的耦合，也利於擴展。</p>
 <blockquote>
-<p>在 SQL 語句中，可使用兩個單引號來表示字串（例如：<code>name = &#39;Duke&#39;</code>）。</p>
+<p>這有沒有覺得熟悉，這就是開放封閉原則的「對擴展開放，對修改封閉」。想要深入了解可以參考另一篇文章：<a target="_blank" rel="noopener" href="https://duke851230.github.io/2023/08/05/python-oop-solid/">Python 與物件導向（五）：SOLID 原則</a>。</p>
 </blockquote>
-<p>駭客利用單引號來結束原本語意，然後插入惡意語句來完成攻擊。以下範例是駭客透過單引號繞過密碼驗證：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 後端資安漏洞：</span><br><span class="hljs-comment"># pwd 為使用者輸入的密碼</span><br>sql = <span class="hljs-string">&quot;SELECT * FROM users WHERE (username=&#x27;admin&#x27;) AND (password=&#x27;&#123;pwd&#125;&#x27;);&quot;</span>.<span class="hljs-built_in">format</span>(pwd=pwd)<br></code></pre></td></tr></table></figure>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-comment">/*</span><br><span class="hljs-comment">正常情況： pwd = &quot;admin123&quot;</span><br><span class="hljs-comment">*/</span><br><span class="hljs-keyword">SELECT</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">FROM</span> users <span class="hljs-keyword">WHERE</span> (username<span class="hljs-operator">=</span><span class="hljs-string">&#x27;admin&#x27;</span>) <span class="hljs-keyword">AND</span> (password<span class="hljs-operator">=</span><span class="hljs-string">&#x27;admin123&#x27;</span>);<br></code></pre></td></tr></table></figure>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-comment">/*</span><br><span class="hljs-comment">駭客攻擊： pwd = &quot;&#x27; OR 1=1&quot;</span><br><span class="hljs-comment">*/</span><br><span class="hljs-keyword">SELECT</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">FROM</span> users <span class="hljs-keyword">WHERE</span> (username<span class="hljs-operator">=</span><span class="hljs-string">&#x27;admin&#x27;</span>) <span class="hljs-keyword">AND</span> (password<span class="hljs-operator">=</span><span class="hljs-string">&#x27;&#x27;</span> <span class="hljs-keyword">OR</span> <span class="hljs-number">1</span><span class="hljs-operator">=</span><span class="hljs-number">1</span>);<br></code></pre></td></tr></table></figure>
-</li>
-<li><p><font color=#6495ed><strong>分號：</strong></font></p>
-<blockquote>
-<p>在 SQL 語句中，可使用分號來分隔兩個語句。</p>
-</blockquote>
-<p> 駭客利用分號來分隔語句，在分號之後插入惡意語句來完成攻擊。以下範例是駭客透過分號來刪掉資料表：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 後端資安漏洞：</span><br><span class="hljs-comment"># user_id 為使用者輸入的密碼</span><br>sql = <span class="hljs-string">&quot;SELECT * FROM users WHERE id=&#123;user_id&#125;;&quot;</span>.<span class="hljs-built_in">format</span>(user_id=user_id)<br></code></pre></td></tr></table></figure>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-comment">/*</span><br><span class="hljs-comment">正常情況： user_id = 1</span><br><span class="hljs-comment">*/</span><br><span class="hljs-keyword">SELECT</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">FROM</span> users <span class="hljs-keyword">WHERE</span> id<span class="hljs-operator">=</span><span class="hljs-number">1</span>;<br></code></pre></td></tr></table></figure>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-comment">/*</span><br><span class="hljs-comment">駭客攻擊： user_id = &quot;1; DROP table users&quot;</span><br><span class="hljs-comment">*/</span><br><span class="hljs-keyword">SELECT</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">FROM</span> users <span class="hljs-keyword">WHERE</span> id<span class="hljs-operator">=</span><span class="hljs-number">1</span>; <span class="hljs-keyword">DROP</span> <span class="hljs-keyword">TABLE</span> users;<br></code></pre></td></tr></table></figure></li>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Jeep</span>:<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self, wheel: Wheel, engine: Engine</span>) -&gt; <span class="hljs-literal">None</span>:<br>        self.__whell: Wheel = wheel<br>        self.__engine: Engine = engine<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">run</span>(<span class="hljs-params">self</span>) -&gt; <span class="hljs-literal">None</span>:<br>        self.__engine.start()<br>        self.__whell.rotate()<br><br><br>jeep: Jeep = Jeep(wheel=BigWheel(), engine=PowerfulEngine())<br>jeep.run()<br><span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-string">引擎啟動！</span><br><span class="hljs-string">用大輪子跑跑跑</span><br><span class="hljs-string">&quot;&quot;&quot;</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="繼承與組合的優缺點："><a href="#繼承與組合的優缺點：" class="headerlink" title="繼承與組合的優缺點："></a>繼承與組合的優缺點：</h2><h3 id="繼承（inheritance）：-1"><a href="#繼承（inheritance）：-1" class="headerlink" title="繼承（inheritance）："></a><font color=#d2691e>繼承（inheritance）：</font></h3><h4 id="優點："><a href="#優點：" class="headerlink" title="優點："></a><font color=#6495ed><strong>優點：</strong></font></h4><ol>
+<li>使用起來<strong>較為直覺</strong>，因為繼承是我們一般腦迴路的思考模式。</li>
+<li>能簡單的<strong>重用代碼</strong>，子類會繼承父類的屬性和方法。</li>
+<li>可以輕易對父類別進行<strong>擴充</strong>，子類別可以添加父類沒有的新方法。</li>
+<li>可以實現程式的多態性（也就是多型）。<br>想進一步了解「多型」的朋友，可以參考之前的文章：<a target="_blank" rel="noopener" href="https://duke851230.github.io/2023/08/02/python-oop-three-principles/">Python 與物件導向（二）：類別的三大特性</a>。</li>
 </ol>
-<h2 id="如何防範-SQL-Injection？"><a href="#如何防範-SQL-Injection？" class="headerlink" title="如何防範 SQL Injection？"></a>如何防範 SQL Injection？</h2><h3 id="造成攻擊的原因："><a href="#造成攻擊的原因：" class="headerlink" title="造成攻擊的原因："></a><font color=#d2691e>造成攻擊的原因：</font></h3><p>這邊先來跟大家說說什麼樣的後端設計，會容易導致產生漏洞而被攻擊。</p>
-<ol>
-<li><p>太過信任使用者的輸入，而未對其做任何檢查<br>這是造成 SQL Injection 的主要原因，因為駭客都是透過在輸入中埋惡意腳本的。</p>
-</li>
-<li><p>後端使用不安全的方式（例如：<strong>字符串拼接</strong>）構建 SQL 語句<br>這也是<strong>造成攻擊的主要原因</strong>，因為駭客可以輕易的在其中埋下惡意代碼。</p>
-</li>
-<li><p>資料庫使用者擁有過高的權限，導致災害嚴重<br>通常不應該讓網站的資料庫使用者有刪除資料庫(表)的權力。</p>
-</li>
+<h4 id="缺點："><a href="#缺點：" class="headerlink" title="缺點："></a><font color=#6495ed><strong>缺點：</strong></font></h4><ol>
+<li><strong>子類跟父類間高度耦合</strong>。要是父類改動了，所有子類也必須改變，導致維護成本較高。</li>
+<li>行為在<strong>編譯時期</strong>的時候就已經決定，<strong>無法動態改變</strong>。</li>
+<li>在單一繼承的語言中，可能會受到限制。</li>
 </ol>
-<h3 id="防範措施："><a href="#防範措施：" class="headerlink" title="防範措施："></a><font color=#d2691e>防範措施：</font></h3><ol>
-<li><p><font color=#6495ed><strong>參數化查詢（Parameterized Query）：</strong></font></p>
-<blockquote>
-<p>這是<font color=#FF0000><strong>最有效</strong></font>的防範措施。因為在使用參數化查詢的情況下，資料庫<strong>不會將參數內容視為指令的一部份</strong>。</p>
-</blockquote>
-<p>資料庫會先完成 SQL 指令的編譯後，才套用參數運行。因此就算參數中含有惡意指令，但由於未被編譯，所以就不會被資料庫所運行。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># name 與 pwd 是使用者的輸入</span><br>sql = <span class="hljs-string">&quot;SELECT * FROM users WHERE username=? AND password=?;&quot;</span><br>cursor.execute(sql, (name, pwd))<br></code></pre></td></tr></table></figure></li>
-<li><p><font color=#6495ed><strong>ORM（對象關係映射）：</strong></font><br>讓我們以對象的方式操作資料庫，並自動使用<strong>參數化查詢</strong>。</p>
-</li>
-<li><p><font color=#6495ed><strong>參數檢查：</strong></font><br>在使用輸入數據之前，進行嚴格的驗證和過濾。確保數據符合預期的格式，並且過濾掉危險字符。</p>
-</li>
-<li><p><font color=#6495ed><strong>最小權限原則：</strong></font><br>為資料庫用戶分配最小必要權限，這可以減輕危害發生時造成的損害。</p>
-</li>
-<li><p><font color=#6495ed><strong>設置 WAF：</strong></font></p>
-<blockquote>
-<p>WAF 全稱為 Web Application Firewall，使 Web 應用免於遭受惡意攻擊和不必要的流量。</p>
-</blockquote>
-<p>WAF 通常可以檢測多種網絡攻擊，包括 SQL注入、XSS 攻擊、CSRF 攻擊、爬蟲攻擊等。</p>
-</li>
+<h3 id="組合（composition）：-1"><a href="#組合（composition）：-1" class="headerlink" title="組合（composition）："></a><font color=#d2691e>組合（composition）：</font></h3><h4 id="優點：-1"><a href="#優點：-1" class="headerlink" title="優點："></a><font color=#6495ed><strong>優點：</strong></font></h4><ol>
+<li>由於組合通常會<strong>透過介面來約束各零件的功能</strong>，所以能維持功能的一致性。</li>
+<li>可在<strong>執行期間</strong>替換零件，只要該零件實現了對應介面即可。</li>
+<li>類別的層次不會像繼承那樣，容易深度增長到一個無法管理的境界，<strong>較易維護</strong>。</li>
+<li>每個零件都是專注完成自己的功能，因此更加<strong>內聚</strong>。且與主類別的關係皆為<strong>低耦合</strong>。</li>
+</ol>
+<h4 id="缺點：-1"><a href="#缺點：-1" class="headerlink" title="缺點："></a><font color=#6495ed><strong>缺點：</strong></font></h4><ol>
+<li>需要寫較多的程式碼，增加程式的複雜性。</li>
 </ol>
 
                 
@@ -357,12 +338,12 @@
     
       <span class="category-chain">
         
-  <a href="/categories/Web/" class="category-chain-item">Web</a>
+  <a href="/categories/Programming/" class="category-chain-item">Programming</a>
   
   
     <span>></span>
     
-  <a href="/categories/Web/Security/" class="category-chain-item">Security</a>
+  <a href="/categories/Programming/Python/" class="category-chain-item">Python</a>
   
   
 
@@ -379,7 +360,9 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/Security/" class="print-no-link">#Security</a>
+        <a href="/tags/Python/" class="print-no-link">#Python</a>
+      
+        <a href="/tags/OOP/" class="print-no-link">#OOP</a>
       
     </div>
   
@@ -391,8 +374,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>Web 資安系列（六）- SQL Injection</div>
-      <div>https://jamiechen-1230.github.io/2023/07/06/SQL_Injection/</div>
+      <div>Python 與物件導向（六）：繼承 vs 組合</div>
+      <div>https://jamiechen-1230.github.io/2023/08/06/python-oop-inheritance-composition/</div>
     </div>
     <div class="license-meta">
       
@@ -404,7 +387,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>發布於</div>
-          <div>2023年7月6日</div>
+          <div>2023年8月6日</div>
         </div>
       
       
@@ -436,18 +419,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2023/08/01/python-oop-object/" title="Python 與物件導向（一）：類別與物件">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Python 與物件導向（一）：類別與物件</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2023/07/05/CSP/" title="Web 資安系列（五）- CSP">
-                        <span class="hidden-mobile">Web 資安系列（五）- CSP</span>
+                      <a href="/2023/08/05/python-oop-solid/" title="Python 與物件導向（五）：SOLID 原則">
+                        <span class="hidden-mobile">Python 與物件導向（五）：SOLID 原則</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

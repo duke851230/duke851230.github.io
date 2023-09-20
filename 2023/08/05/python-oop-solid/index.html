@@ -24,7 +24,7 @@
 <meta property="og:description" content="接下來就來跟大家分享大名鼎鼎的 SOLID 原則，讓我們可以少寫出富含臭味的程式碼。">
 <meta property="og:locale" content="zh_TW">
 <meta property="article:published_time" content="2023-08-04T16:00:00.000Z">
-<meta property="article:modified_time" content="2023-09-08T14:05:06.118Z">
+<meta property="article:modified_time" content="2023-09-20T05:15:10.588Z">
 <meta property="article:author" content="Duke">
 <meta property="article:tag" content="Python">
 <meta property="article:tag" content="OOP">
@@ -221,7 +221,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          6.7k 字
+          6.8k 字
         
       </span>
     
@@ -232,7 +232,7 @@
         
         
         
-          56 分鐘
+          57 分鐘
         
       </span>
     
@@ -290,37 +290,40 @@
 <h2 id="單一職責原則（Single-Responsibility-Principle）："><a href="#單一職責原則（Single-Responsibility-Principle）：" class="headerlink" title="單一職責原則（Single Responsibility Principle）："></a>單一職責原則（Single Responsibility Principle）：</h2><blockquote>
 <p>這些原則不只適用於類別，像是 Module、Function 也都適用，只是<strong>職責的範圍規模不同</strong>而已。</p>
 </blockquote>
-<p>從字面上來看，SRP 原則就是說<strong>一個類別只負責一個「職責」</strong>，避免將過多職責寫在同一類別。這樣說你們可能還是有點模糊，但如果想成<strong>一個類別只能有一個被修改的理由</strong>，這樣可能就更加明確了。</p>
+<p>從字面上來看，SRP 原則就是說<strong>一個類別只負責一個「職責」</strong>，避免將過多職責寫在同一類別。這樣說你們可能還是有點模糊，但如果想成<font color=#FF0000><strong>一個類別只能有一個被修改的理由</strong></font>，可能就更加明確了。</p>
 <h3 id="簡單範例："><a href="#簡單範例：" class="headerlink" title="簡單範例："></a><font color=#d2691e>簡單範例：</font></h3><blockquote>
 <p>這邊用函數來舉例。</p>
 </blockquote>
 <p>假設 <code>create_a_order()</code> 要做兩件事：「資料庫紀錄訂單資訊」、「寄訂單資訊給買家」。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">create_a_order</span>(<span class="hljs-params">order: <span class="hljs-built_in">dict</span></span>):<br>    <span class="hljs-comment"># 資料庫新增一筆訂單</span><br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Create a order record&quot;</span>)<br><br>    <span class="hljs-comment"># 寄訂單資訊給買家</span><br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Send email to customer&quot;</span>)<br></code></pre></td></tr></table></figure>
-<p>這很明顯違反了 SRP 原則，因為此函數被修改的理由不只一個：</p>
-<ul>
+<p>這很明顯違反了 SRP 原則，因為被修改的理由不只一個：</p>
+<ol>
 <li>資料庫原本沒有紀錄買家資訊，現在要紀錄 &#x3D;&gt; 這會動到「資料庫紀錄訂單資訊」</li>
 <li>原本是用 Email 聯繫買家，現在要改用簡訊 &#x3D;&gt; 這會動到「寄訂單資訊給買家」</li>
-</ul>
-<p>所以我們應該將此函數拆開，讓一個函數只負責做一件事。這邊我們用 <code>create_a_order_record()</code> 來處理資料庫新增紀錄，<code>send_order_info_to_customer()</code> 來負責寄信聯絡買家，<code>create_a_order()</code> 則只要做好流程控制即可。<strong>這樣每個函數都只有一個被修改的理由</strong>。</p>
+</ol>
+<p>所以我們應該將它拆解，讓一個函數只負責做一件事。例如用 <code>create_a_order_record()</code> 來處理資料庫新增紀錄，<code>send_order_info_to_customer()</code> 來負責寄信聯絡買家。而 <code>create_a_order()</code> 本身則只用來做流程控制，<strong>這樣每個函數都只有一個被修改的理由</strong>。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">create_a_order</span>(<span class="hljs-params">order: <span class="hljs-built_in">dict</span></span>):<br>    create_a_order_record(order)<br>    send_order_info_to_customer(order[<span class="hljs-string">&quot;customer_email&quot;</span>], order)<br>    <br><span class="hljs-keyword">def</span> <span class="hljs-title function_">create_a_order_record</span>(<span class="hljs-params">order: <span class="hljs-built_in">dict</span></span>):<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Create a order record&quot;</span>)<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">send_order_info_to_customer</span>(<span class="hljs-params">email: <span class="hljs-built_in">str</span>, order: <span class="hljs-built_in">dict</span></span>):<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Send email to customer&quot;</span>)<br></code></pre></td></tr></table></figure>
-<p>現在可能很多人會在想：函數不是為了用來消除重複的程式碼嗎？我切出來那麼多不可重複用的函數有什麼意義？<br>其實消除重複的程式碼只是其中一個作用而已。我們<strong>拉出函數是為了要「<font color=#FF0000>封裝程式邏輯</font>」</strong>，讓程式更<strong>單純、內聚</strong>，這樣 Debug 時就能更容易縮小範圍，找到問題所在。</p>
-<h2 id="開放封閉原則（Open-Close-Principle）："><a href="#開放封閉原則（Open-Close-Principle）：" class="headerlink" title="開放封閉原則（Open-Close Principle）："></a>開放封閉原則（Open-Close Principle）：</h2><p>軟體實體（模組、類別、函數）都應該<font color=#FF0000><strong>對擴展開放，而對修改封閉</strong></font>。意思是在說，當需求變更我們要更動程式碼時，應該是要透過<strong>新增程式碼來取代原有模組，而不是直接更改原有的程式碼</strong>。</p>
+<p>現在可能很多人會在想：函數不是為了用來消除重複的程式碼嗎？我切出來那麼多不可重複用的函數有什麼意義？<br>其實消除重複的程式碼只是其中一個作用而已。抽出函數更重要的是為了要<strong>「<font color=#FF0000>封裝程式邏輯</font>」</strong>，讓單一函數更<strong>單純、內聚</strong>，這樣 Debug 時就能更容易的鎖定問題所在。</p>
+<h2 id="開放封閉原則（Open-Close-Principle）："><a href="#開放封閉原則（Open-Close-Principle）：" class="headerlink" title="開放封閉原則（Open-Close Principle）："></a>開放封閉原則（Open-Close Principle）：</h2><p>軟體實體（模組、類別、函數）都應該<font color=#FF0000><strong>對擴展開放，而對修改封閉</strong></font>。意思是在說當需求變更時，應該是要透過<strong>新增程式碼來取代原有模組，而不是直接更改原有的程式碼</strong>。</p>
 <h3 id="什麼是修改？什麼是擴展？"><a href="#什麼是修改？什麼是擴展？" class="headerlink" title="什麼是修改？什麼是擴展？"></a><font color=#d2691e>什麼是修改？什麼是擴展？</font></h3><p>用現實世界來舉例，假設我們現在筆電鍵盤不好用。如果是直接把筆電鍵盤的鍵帽拔掉換成新的，這就是修改；如果我們是買一個機械式鍵盤並透過 USB 外接，這就是擴展。</p>
-<p>那直接拔鍵帽換新的不是很方便又便宜嗎？為什麼還要花大錢買一個新鍵盤？<br>那是因為你沒想過換鍵帽的<strong>副作用</strong>，如果假設你在拔鍵帽時不小心用壞了下面的電路，這樣可能會影響到其他元件的運作。但如果我們是用新鍵盤來外接，就不會動到原有的元件了。</p>
+<p>那直接拔鍵帽換新的不是很方便又便宜嗎？為什麼還要花大錢買一個新鍵盤？<br>那是因為你沒想過換鍵帽的<strong>副作用</strong>，假設你在拔鍵帽時不小心用壞了下面的電路，這樣可能會影響到其他元件的運作。但如果我們是用新鍵盤來外接，就不會動到原有的元件了，更加安全穩定。</p>
 <p>在程式中也是一樣，你不會知道你接手的程式有多少奇怪的邏輯包含在其中。如果我們隨便更改，很容易造成<strong>修好了 A，卻用壞了 B 的窘境</strong>，所以為了要寫出好擴展的程式碼，我們就需要將程式「<strong>模組化</strong>」。</p>
 <blockquote>
 <p>而上述的筆電例子是如何做到「模組化」的呢？就是要預留「<strong>擴充點</strong>」，也就是 USB 接口，讓我們能外接鍵盤。</p>
 </blockquote>
 <p>所以我們寫程式也是如此，盡量將程式模組化。每個模組都透過預留的「<strong>對外接口</strong>」插入其他模組來運行，這樣需求改變時，我們只要根據規範定義出另一個模組就能插入「對外接口」來使用了。</p>
-<blockquote>
-<p>大家可以參考：<a target="_blank" rel="noopener" href="https://duke851230.github.io/2023/08/04/python-oop-abstract-interface/">Python 與物件導向（四）：抽象類別與介面</a>。</p>
+<p>聽到定義規範大家有沒有很熟悉？沒錯就是利用我們之前所講的「抽象類別」與「介面」。大家可以參考之前的文章：<a target="_blank" rel="noopener" href="https://duke851230.github.io/2023/08/04/python-oop-abstract-interface/">Python 與物件導向（四）：抽象類別與介面</a>。</p>
+<h3 id="簡單範例：-1"><a href="#簡單範例：-1" class="headerlink" title="簡單範例："></a><font color=#d2691e>簡單範例：</font></h3><blockquote>
+<p>我們常聽到的「策略模式」就是利用了開放封閉原則原則，所以這邊用一個簡單的策略模式程式來舉例。</p>
 </blockquote>
-<p>而定義規範大家有沒有很熟悉，沒錯就是利用我們之前所講的「抽象類別」與「介面」。</p>
-<h3 id="簡單範例：-1"><a href="#簡單範例：-1" class="headerlink" title="簡單範例："></a><font color=#d2691e>簡單範例：</font></h3><p>這就有點像我們的「策略模式」。<code>calculate_two_float()</code> 是我的主要程式，且它預留了一個擴充點（<code>operator</code> 參數）來讓我們插入運算子。這樣如果需求改變，像是要改用除法，我只要在新增一個 <code>DivisionOperator</code> 即可。</p>
+<p><code>calculate_two_float()</code> 是我的主要程式，且它預留了一個擴充點（<code>operator</code> 參數）來讓我們插入運算子。這樣如果需求改變，像是要改用除法，我只要在新增一個 <code>DivisionOperator</code> 即可。</p>
+<blockquote>
+<p>需求變更時，我們不再是直接暴力的去修改主程式（<code>calculate_two_float()</code>）中的程式碼，而是透過新增一個 <code>Operator</code> 子類來外接。</p>
+</blockquote>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> abc <span class="hljs-keyword">import</span> ABC, abstractmethod<br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Operator</span>(<span class="hljs-title class_ inherited__">ABC</span>):<br><span class="hljs-meta">    @abstractmethod</span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">calculate</span>(<span class="hljs-params">self, a: <span class="hljs-built_in">float</span>, b: <span class="hljs-built_in">float</span></span>) -&gt; <span class="hljs-built_in">float</span>:<br>        <span class="hljs-keyword">pass</span><br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">AddOperator</span>(<span class="hljs-title class_ inherited__">Operator</span>):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">calculate</span>(<span class="hljs-params">self, a: <span class="hljs-built_in">float</span>, b: <span class="hljs-built_in">float</span></span>) -&gt; <span class="hljs-built_in">float</span>:<br>        <span class="hljs-keyword">return</span> a + b<br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">MinusOperator</span>(<span class="hljs-title class_ inherited__">Operator</span>):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">calculate</span>(<span class="hljs-params">self, a: <span class="hljs-built_in">float</span>, b: <span class="hljs-built_in">float</span></span>) -&gt; <span class="hljs-built_in">float</span>:<br>        <span class="hljs-keyword">return</span> a - b<br><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">calculate_two_float</span>(<span class="hljs-params">operator: Operator, a: <span class="hljs-built_in">float</span>, b: <span class="hljs-built_in">float</span></span>) -&gt; <span class="hljs-built_in">float</span>:<br>    res: <span class="hljs-built_in">float</span> = operator.calculate(a, b)<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;result: <span class="hljs-subst">&#123;res&#125;</span>&quot;</span>)<br>    <span class="hljs-keyword">return</span> res<br><br>calculate_two_float(AddOperator(), <span class="hljs-number">10</span>, <span class="hljs-number">5</span>)  <span class="hljs-comment"># 15</span><br>calculate_two_float(MinusOperator(), <span class="hljs-number">10</span>, <span class="hljs-number">5</span>)  <span class="hljs-comment"># 5</span><br></code></pre></td></tr></table></figure>
 
 
-<h2 id="里氏替換原則（Liskov-Substitution-Principle）："><a href="#里氏替換原則（Liskov-Substitution-Principle）：" class="headerlink" title="里氏替換原則（Liskov Substitution Principle）："></a>里氏替換原則（Liskov Substitution Principle）：</h2><p>主要概念就是：<font color=#FF0000><strong>子類必須能夠完全替換父類</strong></font>。<br>也就是說，假設我有一個模組的擴充點為一個類別。當之後要擴展時，我會去繼承這個擴充點類別，並覆寫裡面的方法。而當我將這個「擴充子類」插入原有模組時，不應該發生異常，並要能正確運行。</p>
+<h2 id="里氏替換原則（Liskov-Substitution-Principle）："><a href="#里氏替換原則（Liskov-Substitution-Principle）：" class="headerlink" title="里氏替換原則（Liskov Substitution Principle）："></a>里氏替換原則（Liskov Substitution Principle）：</h2><p>主要概念就是：<font color=#FF0000><strong>子類必須能夠完全替換父類</strong></font>。<br>也就是說，假設我有一個模組的擴充點為一個類別。當之後要擴展時，我會去繼承這個擴充點類別，並覆寫裡面的方法。而當我將這個「擴充子類別」插入原有模組時，不應該發生異常，並能正確運行。</p>
 <p>而子類如何能夠完全替換父類呢？<br>主要是要做到兩點：「<strong>子類要求的不應該比父類別多</strong>」、「<strong>子類返回的不應該比父類別少</strong>」。</p>
 <ul>
 <li>要求指的是<strong>輸入參數</strong>。假設父類是「矩形」類別，要求兩個參數「長」跟「寬」。我們繼承的子類就不能是方形，因為會多要求長跟寬要一樣，不符合里氏替換原則。</li>
@@ -471,6 +474,12 @@
                 <div class="post-prevnext my-3">
                   <article class="post-prev col-6">
                     
+                    
+                      <a href="/2023/08/06/python-oop-inheritance-composition/" title="Python 與物件導向（六）：繼承 vs 組合">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Python 與物件導向（六）：繼承 vs 組合</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
                     
                   </article>
                   <article class="post-next col-6">
