@@ -24,7 +24,7 @@
 <meta property="og:description" content="在新手時期常常會看到有人將 CORS 與 CSRF 搞混，而我不意外也是其中一員。所以想藉此機會在這跟大家分享 CSRF 是什麼，大家有興趣也能去看看我本系列的另一篇文章 Web 資安系列（二）- CORS。">
 <meta property="og:locale" content="zh_TW">
 <meta property="article:published_time" content="2023-07-02T16:00:00.000Z">
-<meta property="article:modified_time" content="2023-09-20T05:15:10.588Z">
+<meta property="article:modified_time" content="2023-10-10T14:37:40.773Z">
 <meta property="article:author" content="Duke">
 <meta property="article:tag" content="Security">
 <meta name="twitter:card" content="summary_large_image">
@@ -220,7 +220,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          3.3k 字
+          3.4k 字
         
       </span>
     
@@ -231,7 +231,7 @@
         
         
         
-          28 分鐘
+          29 分鐘
         
       </span>
     
@@ -333,10 +333,21 @@
 <p>因為 Html 是由後端生成的，所以能在渲染頁面時直接將 Token 寫進 Form 表單中的某個<strong>隱藏欄位</strong>，這樣之後就會隨著表單提交傳遞給後端了。</p>
 <figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">form</span> <span class="hljs-attr">action</span>=<span class="hljs-string">&quot;/submit&quot;</span> <span class="hljs-attr">method</span>=<span class="hljs-string">&quot;POST&quot;</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;hidden&quot;</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;csrf_token&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;your_csrf_token_here&quot;</span>&gt;</span><br>  <span class="hljs-comment">&lt;!-- other form fields --&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;submit&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;Submit&quot;</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">form</span>&gt;</span><br></code></pre></td></tr></table></figure></li>
 <li><p>在<strong>前後端分離</strong>且<strong>前後端同源</strong>的情況下：</p>
+<p>因為我們前後端是同源的，所以在進行以下操作時，都要記得<font color=#FF0000><strong>將 Cookie 的 SameSite 設為 Strict</strong></font>。  </p>
+<ol>
+<li><p>Server Side:</p>
 <blockquote>
 <p>因 Token 要能先被 js 讀取後，才能放到請求頭裡。故不能設置 HTTP Only，但這會有被 XSS 攻擊的風險，需要前端做好其他對 XSS 攻擊的防護。</p>
 </blockquote>
-<p>後端可以透過 Cookie 向前端傳遞 Token（<font color=#FF0000><strong>Http Only 為 False、Secure 為 True</strong></font>）。這樣前端就能從 Cookie 中取出 Token，並在之後的請求頭（X-CSRF-Token 欄位）中帶上，後端只要驗證 Cookie 和 X-CSRF-Token 中的值是否一樣即可。</p>
+<p>後端可以透過 Cookie（<strong>Http Only 為 False</strong>）向前端傳遞 Token。這樣前端就能從 Cookie 中取出 Token，並在之後的請求頭（X-CSRF-Token 欄位）中帶上，後端只要驗證 Cookie 和 X-CSRF-Token 中的值是否一樣即可。</p>
+</li>
+<li><p>Client Side:</p>
+<blockquote>
+<p>這裡的 Token 是由<font color=#FF0000><strong>前端</strong></font>自行產出，適用於 SPA 網站。</p>
+</blockquote>
+<p>在 Double Submit Cookie 中則是<strong>由前端自行產生 Token</strong>，並分別放在 <strong>Cookie（Http Only 為 False）與請求頭</strong>中，這樣後端只要驗證兩者是不是相同，就知道是不是惡意請求了。<br>而駭客網站因為<font color=#FF0000><strong>不同源</strong></font>，沒辦法讀寫目標網站的 Cookie，所以請求頭的 Token 會跟 Cookie 內的會不一樣，這樣就能防止駭客攻擊。</p>
+</li>
+</ol>
 </li>
 <li><p>在<strong>前後端分離</strong>且<strong>前後端不同源</strong>的情況下：</p>
 <blockquote>
@@ -345,12 +356,6 @@
 <p>因 Cookie 無法被不同源的地方獲取，故前後端只能透過 API 來傳遞 Token。前端在發送請求前，都須先呼叫另一支 API 取得 Token 並將其加入請求頭中。</p>
 </li>
 </ul>
-</li>
-<li><p><font color=#6495ed><strong>Client Side Double Submit Cookie：</strong></font></p>
-<blockquote>
-<p>這裡的 Token 是由<font color=#FF0000><strong>前端</strong></font>自行產出，適用於 SPA 網站。</p>
-</blockquote>
-<p>在 Double Submit Cookie 中則是<strong>由前端自行產生 Token</strong>，並分別放在 <strong>Cookie 與請求頭</strong>中，這樣後端只要驗證兩者是不是相同，就知道是不是惡意請求了。<br>因為駭客沒辦法讀寫目標網站的 Cookie（<font color=#FF0000><strong>不同源</strong></font>），所以請求頭的 Token 會跟 Cookie 內的會不一樣，這樣就能防止駭客攻擊。</p>
 </li>
 </ol>
 <h2 id="不要再將-CSRF、CORS-與-SOP-搞混了！"><a href="#不要再將-CSRF、CORS-與-SOP-搞混了！" class="headerlink" title="不要再將 CSRF、CORS 與 SOP 搞混了！"></a>不要再將 CSRF、CORS 與 SOP 搞混了！</h2><p>接下來跟大家科普一下 <code>CSRF</code>、<code>CORS</code>、<code>SOP</code>，雖然這三者之間有一定的關聯，但他們本質上是完全不同的東西。</p>
