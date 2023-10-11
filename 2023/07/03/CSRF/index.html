@@ -24,7 +24,7 @@
 <meta property="og:description" content="在新手時期常常會看到有人將 CORS 與 CSRF 搞混，而我不意外也是其中一員。所以想藉此機會在這跟大家分享 CSRF 是什麼，大家有興趣也能去看看我本系列的另一篇文章 Web 資安系列（二）- CORS。">
 <meta property="og:locale" content="zh_TW">
 <meta property="article:published_time" content="2023-07-02T16:00:00.000Z">
-<meta property="article:modified_time" content="2023-10-10T14:47:44.566Z">
+<meta property="article:modified_time" content="2023-10-11T01:54:49.252Z">
 <meta property="article:author" content="Duke">
 <meta property="article:tag" content="Security">
 <meta name="twitter:card" content="summary_large_image">
@@ -333,19 +333,19 @@
 <p>因為 Html 是由後端生成的，所以能在渲染頁面時直接將 Token 寫進 Form 表單中的某個<strong>隱藏欄位</strong>，這樣之後就會隨著表單提交傳遞給後端了。</p>
 <figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">form</span> <span class="hljs-attr">action</span>=<span class="hljs-string">&quot;/submit&quot;</span> <span class="hljs-attr">method</span>=<span class="hljs-string">&quot;POST&quot;</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;hidden&quot;</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;csrf_token&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;your_csrf_token_here&quot;</span>&gt;</span><br>  <span class="hljs-comment">&lt;!-- other form fields --&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;submit&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;Submit&quot;</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">form</span>&gt;</span><br></code></pre></td></tr></table></figure></li>
 <li><p>在<strong>前後端分離</strong>且<strong>前後端同源</strong>的情況下：</p>
-<p>因為我們前後端是同源的，所以在進行以下操作時，都要記得<font color=#FF0000><strong>將 Cookie 的 SameSite 設為 Strict</strong></font>。  </p>
+<p>因為前後端是同源的，所以在進行以下操作時，可<font color=#FF0000><strong>將 Cookie 的 SameSite 設為 Strict</strong></font>，增加網站安全性。  </p>
 <ol>
 <li><p>Server Side:</p>
 <blockquote>
-<p>因 Token 要能先被 js 讀取後，才能放到請求頭裡。故不能設置 HTTP Only，但這會有被 XSS 攻擊的風險，需要前端做好其他對 XSS 攻擊的防護。</p>
+<p>因 Token 要能先被 js 讀取後，才能放到請求頭裡，故 <font color=#FF0000><strong>Cookie 的 Http Only 須設為 False</strong></font>。但這就有被 XSS 盜取 Cookie 的風險，所以前端須在其他方面做好對 XSS 攻擊的防護。<br>可以參考本系列的另一篇文章 <a target="_blank" rel="noopener" href="https://duke851230.github.io/2023/07/04/XSS/">Web 資安系列（四）- XSS</a>。</p>
 </blockquote>
-<p>後端可以透過 Cookie（<strong>Http Only 為 False</strong>）向前端傳遞 Token。這樣前端就能從 Cookie 中取出 Token，並在之後的請求頭（X-CSRF-Token 欄位）中帶上，後端只要驗證 Cookie 和 X-CSRF-Token 中的值是否一樣即可。</p>
+<p>後端透過 Cookie 向前端傳遞 Token，而前端需要在之後的請求頭（X-CSRF-Token 欄位）中帶上此 Token。這樣後端只要驗證 Cookie 和 X-CSRF-Token 中的值是否一樣即可。</p>
 </li>
 <li><p>Client Side:</p>
 <blockquote>
 <p>這裡的 Token 是由<font color=#FF0000><strong>前端</strong></font>自行產出，適用於 SPA 網站。</p>
 </blockquote>
-<p>在 Double Submit Cookie 中則是<strong>由前端自行產生 Token</strong>，並分別放在 <strong>Cookie（Http Only 為 False）與請求頭</strong>中，這樣後端只要驗證兩者是不是相同，就知道是不是惡意請求了。<br>而駭客網站因為<font color=#FF0000><strong>不同源</strong></font>，沒辦法讀寫目標網站的 Cookie，所以請求頭的 Token 會跟 Cookie 內的會不一樣，這樣就能防止駭客攻擊。</p>
+<p>在這是<strong>由前端自行產生 Token</strong>，並分別放在 Cookie 與請求頭中，這樣後端只要驗證兩者是不是相同，就知道是不是惡意請求了。<br>而駭客網站因為<font color=#FF0000><strong>不同源</strong></font><strong>，沒辦法讀寫目標網站的 Cookie</strong>，所以請求頭的 Token 會跟 Cookie 內的會不一樣，這樣就能防止駭客攻擊。</p>
 </li>
 </ol>
 </li>
