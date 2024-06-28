@@ -1,0 +1,785 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-TW" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/avatar2.jpg">
+  <link rel="icon" href="/img/avatar2.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Duke">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="之前在求學階段就有聽過 XSS 攻擊，但一直沒去深入了解它是什麼，今天趁這個機會來學習學習。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Web 資安系列（四）- XSS">
+<meta property="og:url" content="https://jamiechen-1230.github.io/2023/07/04/XSS/index.html">
+<meta property="og:site_name" content="小小後端の冒險">
+<meta property="og:description" content="之前在求學階段就有聽過 XSS 攻擊，但一直沒去深入了解它是什麼，今天趁這個機會來學習學習。">
+<meta property="og:locale" content="zh_TW">
+<meta property="article:published_time" content="2023-07-03T16:00:00.000Z">
+<meta property="article:modified_time" content="2024-06-28T07:59:29.037Z">
+<meta property="article:author" content="Duke">
+<meta property="article:tag" content="Security">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>Web 資安系列（四）- XSS - 小小後端の冒險</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"jamiechen-1230.github.io","root":"/","version":"1.9.5","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 60vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>小小後端の冒險</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首頁</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>文章</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分類</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>標籤</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>關於</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/plant.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Web 資安系列（四）- XSS"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-07-04 00:00" pubdate>
+          2023年7月4日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          34 分鐘
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Web 資安系列（四）- XSS</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>之前在求學階段就有聽過 XSS 攻擊，但一直沒去深入了解它是什麼，今天趁這個機會來學習學習。</p>
+<span id="more"></span>
+
+
+<h2 id="前言："><a href="#前言：" class="headerlink" title="前言："></a>前言：</h2><p>在開始看文章以前，先定義等會在文章中看到的代名詞：</p>
+<ul>
+<li>Attacker：駭客</li>
+<li>Website：被駭客發現有 XSS 漏洞的網站</li>
+<li>Website Server：有 XSS 漏洞網站的後臺</li>
+<li>Victim：受害的使用者</li>
+</ul>
+<h2 id="先來講講什麼是-XSS-攻擊？"><a href="#先來講講什麼是-XSS-攻擊？" class="headerlink" title="先來講講什麼是 XSS 攻擊？"></a>先來講講什麼是 XSS 攻擊？</h2><h3 id="XSS-簡介："><a href="#XSS-簡介：" class="headerlink" title="XSS 簡介："></a><font color=#d2691e>XSS 簡介：</font></h3><blockquote>
+<p>全名為 Cross-Site Scripting，跨站腳本攻擊。</p>
+</blockquote>
+<p>XSS 多年來一直都是位列 OWASP 網頁安全漏洞的前十名。因此了解它對我們網頁開發者來說是非常重要的，且這不僅僅是前端的問題，後端也要做好相對應的防護才行。</p>
+<p>通常 Attacker 是對<font color=#FF0000><strong>網站的輸入點</strong></font>（例如表單、留言板、URL 等）進行攻擊。<br>簡單的說，XSS 就是透過將<strong>惡意腳本</strong>埋進 Website 中，之後再誘使 Victim 去瀏覽頁面，當 Website 在加載的同時，惡意腳本也會跟著自動執行，導致 Victim 的機密資料洩漏（例如竊取 Cookie、劫持 Session 等）。</p>
+<h2 id="XSS-三大種類："><a href="#XSS-三大種類：" class="headerlink" title="XSS 三大種類："></a>XSS 三大種類：</h2><h3 id="反射型-XSS（Reflected-XSS）："><a href="#反射型-XSS（Reflected-XSS）：" class="headerlink" title="反射型 XSS（Reflected XSS）："></a><font color=#d2691e>反射型 XSS（Reflected XSS）：</font></h3><p>反射型 XSS 是發生在<font color=#FF0000><strong>前後端未分離</strong></font>的情況下。因為<strong>後端沒有驗證前端傳來的輸入</strong>，所以後端在渲染 HTML 時，可能就會將夾帶惡意代碼的輸入一併渲染進去，此時只要回傳給前端並加載頁面後，就會遭受攻擊。</p>
+<h4 id="攻擊手法："><a href="#攻擊手法：" class="headerlink" title="攻擊手法："></a><font color=#6495ed>攻擊手法：</font></h4><p>通常是將惡意腳本藏在網址列的 <strong>GET 參數</strong>中，然後透過社交工程信件讓 Victim 誤點網址，這樣就有可能被盜取機密資訊。</p>
+<h4 id="一個簡單的範例："><a href="#一個簡單的範例：" class="headerlink" title="一個簡單的範例："></a><font color=#6495ed>一個簡單的範例：</font></h4><blockquote>
+<p>假設 Website Server 返回的 HTML 會包括「欲搜尋的關鍵字（有可能帶有惡意腳本）」與「匹配的結果」。</p>
+</blockquote>
+<p>假設 Website 有個搜索頁面，會將搜尋的關鍵字<strong>丟向後端</strong>進行查詢，然後後端會渲染出一個 HTML 返回給前端。此時只要 Website 沒有驗證後端傳來的訊息，並直接加載頁面，惡意腳本就會被觸發了。</p>
+<p>所以 Attacker 只要將惡意腳本帶在 query 參數之後，然後想辦法讓 Victim 點擊到即可，如下所示：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs text">https://example.com/search?query=&lt;script&gt;alert(&#x27;XSS&#x27;)&lt;/script&gt;<br></code></pre></td></tr></table></figure>
+<h4 id="簡易流程如下："><a href="#簡易流程如下：" class="headerlink" title="簡易流程如下："></a><font color=#6495ed>簡易流程如下：</font></h4><pre><code class=" mermaid">sequenceDiagram
+
+participant Attacker
+participant Victim
+participant Website
+participant Website Server
+
+Attacker-&gt;&gt;Victim: 1.
+Victim-&gt;&gt;Website: 2.
+Website-&gt;&gt;Website Server: 3.
+Website Server-&gt;&gt;Website: 4.
+Website-&gt;&gt;Website: 5.
+Website-&gt;&gt;Attacker: 6.
+</code></pre>
+<ol>
+<li>Attacker 將<strong>帶有「惡意腳本」的網站連結</strong>傳給 Victim（例如透過 Email 等傳輸途徑）。</li>
+<li><strong>Victim 點擊惡意連結</strong>，並將瀏覽器頁面導向 Website。</li>
+<li>Website 向 Website Server 送出帶有惡意腳本參數的請求。</li>
+<li>Website Server 將響應返回時，因沒做任何處理，也帶上了惡意腳本回來。</li>
+<li>Website 渲染頁面時，惡意腳本也被偷偷運行。</li>
+<li>腳本運行完後，將 Victim 的機密資訊回傳給 Attacker。</li>
+</ol>
+<h3 id="DOM-型-XSS-（DOM-based-XSS）："><a href="#DOM-型-XSS-（DOM-based-XSS）：" class="headerlink" title="DOM 型 XSS （DOM-based XSS）："></a><font color=#d2691e>DOM 型 XSS （DOM-based XSS）：</font></h3><p>嚴格來說 DOM-based XSS 其實也算反射型 XSS，區別在於 DOM-based XSS 只是<font color=#FF0000><strong>前端渲染問題</strong></font>，<strong>不會和後端進行交互</strong>。</p>
+<h4 id="攻擊手法：-1"><a href="#攻擊手法：-1" class="headerlink" title="攻擊手法："></a><font color=#6495ed>攻擊手法：</font></h4><blockquote>
+<p>錨點(<code>#</code>)：用於快速定位到網頁中的某個標記位置。錨點後面的名稱對應著網頁某區塊的 id，使用錨點可以讓網頁快速移動到指定的區塊。</p>
+</blockquote>
+<p>通常是將惡意腳本藏在網址列的<strong>錨點</strong>或是 <strong>GET 參數</strong>中，然後透過社交工程信件讓 Victim 誤點網址，這樣就有可能被盜取機密資訊。</p>
+<h4 id="一個簡單的範例：-1"><a href="#一個簡單的範例：-1" class="headerlink" title="一個簡單的範例："></a><font color=#6495ed>一個簡單的範例：</font></h4><p>假設現在有個網頁（<code>http://example.com/home</code>）中包含以下程式碼：</p>
+<blockquote>
+<p><code>&lt;p&gt;</code> 標籤會根據 GET 參數的 name 字段改變內容。</p>
+</blockquote>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">html</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">body</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">p</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;p1&quot;</span>&gt;</span>Hi, xxx<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="language-javascript"></span><br><span class="language-javascript">            <span class="hljs-keyword">var</span> quary_string = <span class="hljs-variable language_">document</span>.<span class="hljs-property">location</span>.<span class="hljs-property">search</span>;</span><br><span class="language-javascript">            <span class="hljs-keyword">var</span> param_obj = <span class="hljs-keyword">new</span> <span class="hljs-title class_">URLSearchParams</span>(quary_string);</span><br><span class="language-javascript"></span><br><span class="language-javascript">            <span class="hljs-keyword">var</span> name = param_obj.<span class="hljs-title function_">get</span>(<span class="hljs-string">&quot;name&quot;</span>);</span><br><span class="language-javascript">            <span class="hljs-keyword">if</span> (name !== <span class="hljs-string">&quot;null&quot;</span>) &#123;</span><br><span class="language-javascript">                <span class="hljs-variable language_">document</span>.<span class="hljs-title function_">getElementById</span>(<span class="hljs-string">&quot;p1&quot;</span>).<span class="hljs-property">innerHTML</span> = <span class="hljs-string">&quot;Hi, &quot;</span> + name;</span><br><span class="language-javascript">            &#125;</span><br><span class="language-javascript">        </span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">body</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">html</span>&gt;</span><br></code></pre></td></tr></table></figure>
+<p>這時駭客只要發送 <code>http://example.com/home?name=&lt;img+src+onerror=alert(&#39;XSS&#39;)&gt;</code> 的請求，則惡意腳本就會被執行並彈出一個帶有 “XSS” 的警告框。</p>
+<h4 id="簡易流程如下：-1"><a href="#簡易流程如下：-1" class="headerlink" title="簡易流程如下："></a><font color=#6495ed>簡易流程如下：</font></h4><pre><code class=" mermaid">sequenceDiagram
+
+participant Attacker
+participant Victim
+participant Website
+
+Attacker-&gt;&gt;Victim: 1.
+Victim-&gt;&gt;Website: 2.
+Website-&gt;&gt;Website: 3.
+Website-&gt;&gt;Attacker: 4.
+</code></pre>
+<ol>
+<li>Attacker 將<strong>帶有「惡意腳本」的網站連結</strong>傳給 Victim（例如透過 Email 等傳輸途徑）。</li>
+<li><strong>Victim 點擊惡意連結</strong>，並將瀏覽器頁面導向 Website。</li>
+<li>Website 加載頁面時，惡意腳本也被偷偷運行。</li>
+<li>腳本運行完後，將 Victim 的機密資訊回傳給 Attacker。</li>
+</ol>
+<h3 id="儲存型-XSS-（Stored-XSS）："><a href="#儲存型-XSS-（Stored-XSS）：" class="headerlink" title="儲存型 XSS （Stored XSS）："></a><font color=#d2691e>儲存型 XSS （Stored XSS）：</font></h3><p>與前兩種手法不同，此種攻擊手法<strong>不需要使用社交工程釣魚</strong>，也能使 Victim 受到攻擊。</p>
+<h4 id="攻擊手法：-2"><a href="#攻擊手法：-2" class="headerlink" title="攻擊手法："></a><font color=#6495ed>攻擊手法：</font></h4><p>這是 Attacker 透過將惡意腳本<strong>存儲在 Website Server</strong> 上，例如透過「留言板」留言。當 Victim 之後訪問這些被攻擊過的 Website 時，留言會被加載，惡意腳本就會被自動執行。</p>
+<h4 id="一個簡單的範例：-2"><a href="#一個簡單的範例：-2" class="headerlink" title="一個簡單的範例："></a><font color=#6495ed>一個簡單的範例：</font></h4><p>最常見的例子就是將惡意腳本寫入留言板（這時惡意腳本就會被存到後端資料表中）。當下一位 Victim 瀏覽網頁時，網頁會載入留言板（就會順便把惡意腳本渲染出來），導致被攻擊。</p>
+<p>範例如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs javascript">&lt;script&gt;<span class="hljs-title function_">alert</span>(<span class="hljs-string">&#x27;XSS&#x27;</span>)&lt;/script&gt;<br></code></pre></td></tr></table></figure>
+
+<h4 id="簡易流程如下：-2"><a href="#簡易流程如下：-2" class="headerlink" title="簡易流程如下："></a><font color=#6495ed>簡易流程如下：</font></h4><pre><code class=" mermaid">sequenceDiagram
+
+participant Attacker
+participant Victim
+participant Website
+participant Website Server
+
+Attacker-&gt;&gt;Website: 1.
+Website-&gt;&gt;Website Server: 2.
+Victim-&gt;&gt;Website: 3.
+Website-&gt;&gt;Website Server: 4.
+Website Server-&gt;&gt;Website: 5.
+Website-&gt;&gt;Website: 6.
+Website-&gt;&gt;Attacker: 7.
+</code></pre>
+<ol>
+<li>Attacker 在 Website 的留言板中輸入惡意腳本。</li>
+<li>Website 向 Website Server 發請求，將留言存進資料庫（這時惡意腳本就會被存到後端了）。</li>
+<li>Victim <strong>正常瀏覽</strong> Website。</li>
+<li>Website 向 Website Server 發請求，要求讀取所有留言。</li>
+<li>Website Server 返回留言（其中包含惡意腳本）。</li>
+<li>Website 在渲染留言板的同時，也在偷偷運行惡意腳本。</li>
+<li>腳本運行完後，將 Victim 的機密資訊回傳給 Attacker。</li>
+</ol>
+<h2 id="如何防範-XSS-攻擊？"><a href="#如何防範-XSS-攻擊？" class="headerlink" title="如何防範 XSS 攻擊？"></a>如何防範 XSS 攻擊？</h2><ol>
+<li><p><font color=#6495ed><strong>輸入驗證與過濾：</strong></font><br>不管是前後端，對於所有輸入數據都要<strong>先假設為不可信的</strong>，包括表單提交、請求參數、留言板等，都應該進行驗證和過濾。確保<strong>只接受預期格式</strong>的數據，並過濾掉包含腳本標記的輸入。</p>
+</li>
+<li><p><font color=#6495ed><strong>設定 CSP 安全 HTTP Header：</strong></font><br>CSP（Content Security Policy）是瀏覽器提供<strong>設定白名單的機制</strong>，告訴瀏覽器哪些網頁的哪些位置可以連，限制允許載入的資源，如 JavaScript、CSS、字體和圖片等。</p>
+<blockquote>
+<p><code>Content-Security-Policy: script-src &#39;self&#39;</code>：表示只允許載入同源的 JavaScript 腳本。</p>
+</blockquote>
+</li>
+<li><p><font color=#6495ed><strong>Cookie 設定 HTTP Only：</strong></font><br>讓 Cookie 無法被 JavaScript 所讀取，減少對於 Session 等機密被竊取的風險。</p>
+</li>
+<li><p><font color=#6495ed><strong>避免動態生成程式碼：</strong></font><br>前端避免使用 <code>document.write</code>、<code>innerHTML</code> 等函數來<strong>動態生成 DOM 元素</strong>，因為欲被轉換的字串中可能包含惡意腳本。</p>
+</li>
+<li><p><font color=#6495ed><strong>HTML Escaping：</strong></font><br>HTML Escaping 會對特殊字符（如 <code>&lt;</code>、<code>&gt;</code>、<code>&amp;</code>等）進行轉換。這樣同樣可以在 HTML 中正確顯示這些字符，且同時能<strong>防止腳本在瀏覽器中執行</strong>。</p>
+<blockquote>
+<p>如果未對 <code>&lt;script&gt;alert(&quot;XSS&quot;)&lt;/script&gt;</code> 進行轉義，將會被解釋為 JavaScript 腳本，並會在瀏覽器中執行。<br>但如果轉義成 <code>&amp;lt;script&amp;gt;alert(&amp;quot;XSS&amp;quot;)&amp;lt;/script&amp;gt;</code>，它同樣能正確顯示且不會被執行。</p>
+</blockquote>
+</li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Web/" class="category-chain-item">Web</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/Web/Security/" class="category-chain-item">Security</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Security/" class="print-no-link">#Security</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Web 資安系列（四）- XSS</div>
+      <div>https://jamiechen-1230.github.io/2023/07/04/XSS/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Duke</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>發布於</div>
+          <div>2023年7月4日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>許可協議</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/07/05/CSP/" title="Web 資安系列（五）- CSP">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Web 資安系列（五）- CSP</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/07/03/CSRF/" title="Web 資安系列（三）- CSRF">
+                        <span class="hidden-mobile">Web 資安系列（三）- CSRF</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目錄</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"neutral"});
+
+    Fluid.utils.listenDOMLoaded(function() {
+      Fluid.events.registerRefreshCallback(function() {
+        if ('mermaid' in window) {
+          mermaid.init();
+        }
+      });
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜尋</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">關鍵字</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允許 JavaScript 運行的環境下瀏覽效果更佳</div>
+  </noscript>
+</body>
+</html>

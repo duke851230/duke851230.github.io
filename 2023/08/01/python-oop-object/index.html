@@ -1,0 +1,694 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-TW" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/avatar2.jpg">
+  <link rel="icon" href="/img/avatar2.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Duke">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="工作也有些年頭了，趁這個機會來總結一下之前所學的知識，若有不足之處，請多多包含。第一篇就來分享一下何謂類別（Class）與物件（Object）。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python 與物件導向（一）：類別與物件">
+<meta property="og:url" content="https://jamiechen-1230.github.io/2023/08/01/python-oop-object/index.html">
+<meta property="og:site_name" content="小小後端の冒險">
+<meta property="og:description" content="工作也有些年頭了，趁這個機會來總結一下之前所學的知識，若有不足之處，請多多包含。第一篇就來分享一下何謂類別（Class）與物件（Object）。">
+<meta property="og:locale" content="zh_TW">
+<meta property="article:published_time" content="2023-07-31T16:00:00.000Z">
+<meta property="article:modified_time" content="2024-06-28T07:59:29.041Z">
+<meta property="article:author" content="Duke">
+<meta property="article:tag" content="OOP">
+<meta property="article:tag" content="Python">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>Python 與物件導向（一）：類別與物件 - 小小後端の冒險</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"jamiechen-1230.github.io","root":"/","version":"1.9.5","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 60vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>小小後端の冒險</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首頁</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>文章</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分類</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>標籤</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>關於</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/plant.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Python 與物件導向（一）：類別與物件"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-08-01 00:00" pubdate>
+          2023年8月1日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          29 分鐘
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Python 與物件導向（一）：類別與物件</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>工作也有些年頭了，趁這個機會來總結一下之前所學的知識，若有不足之處，請多多包含。第一篇就來分享一下何謂類別（Class）與物件（Object）。</p>
+<span id="more"></span>
+
+
+<h2 id="什麼是物件（Object）？"><a href="#什麼是物件（Object）？" class="headerlink" title="什麼是物件（Object）？"></a>什麼是物件（Object）？</h2><p>如果以現實世界來形容的話，物件就充斥在我們身邊，我們所能看到的一切都是物件。不管是車子、房子、人、貓、狗等等，只要是你能說的出來的「東西」都是物件。</p>
+<p>而在 Python 等物件導向語言中，也是將所有東西視為物件。不管是 class、function、int、float、string 等等，<font color=#FF0000><strong>在 Python 中一切皆視為「物件」</strong></font>。</p>
+<blockquote>
+<p>你沒看錯，class 在 Python 中也被視為物件。<br>這會涉及到比較深的知識點，我之後再找時間分享，大家有興趣的話可以先上網搜尋<strong>元類（Metaclass）</strong>和 <strong>type</strong>。</p>
+</blockquote>
+<h2 id="什麼是類別（Class）？"><a href="#什麼是類別（Class）？" class="headerlink" title="什麼是類別（Class）？"></a>什麼是類別（Class）？</h2><blockquote>
+<p>由上述我們可以知道了現實世界中所有東西都是物件，而物件就是用來代表「<strong>某個特定的東西</strong>」。</p>
+</blockquote>
+<p>假設現在有一個叫做「小新」的五歲小朋友，他就是一個物件，而他最愛吃的小熊餅乾也是一個物件。  </p>
+<p>而我們發現物件間是可以<strong>互動</strong>的。像是小新可以吃小熊餅乾，是因為小新身為「人」，所以有「吃東西」這個<font color=#FF0000><strong>行為</strong></font>。<br>同時我們也發現物件是有自己的<font color=#FF0000><strong>特徵</strong></font>的，像是小新身高 100 公分且今年五歲。</p>
+<h3 id="定義類別："><a href="#定義類別：" class="headerlink" title="定義類別："></a><font color=#d2691e>定義類別：</font></h3><p>由上述我們知道小新身為人可以有許多「<strong>行為</strong>」和「<strong>特徵</strong>」，但我們在程式中要怎麼去表達或定義呢？<br>這時我們就會需要使用到類別，類別是用來幫我們定義「同一類的物件」會有哪些行為與特徵。</p>
+<p>像是這邊我們定義了一個「人」的類別，每個人都有「吃東西」這個行為，且有「年齡」和「身高」兩個特徵。</p>
+<blockquote>
+<p>行為在程式中稱為「方法」；特徵在程式中稱為「屬性」。</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Person</span>:<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self, age: <span class="hljs-built_in">int</span>, height: <span class="hljs-built_in">float</span></span>) -&gt; <span class="hljs-literal">None</span>:<br>        self.age: <span class="hljs-built_in">int</span> = age<br>        self.height: <span class="hljs-built_in">float</span> = height<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">eat</span>(<span class="hljs-params">self, food: <span class="hljs-built_in">str</span></span>):<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;吃<span class="hljs-subst">&#123;food&#125;</span>&quot;</span>)<br></code></pre></td></tr></table></figure>
+
+<p>接著就可以用「人」這個類別來表達小新了。</p>
+<blockquote>
+<p>在程式中，會把類別產生的物件叫做「實例」，而從類別產生物件的過程，就叫做<strong>實例化</strong>。</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs pytohn"># shinchan 是小新的英文名<br>shinchan: Person = Person(age=5, height=100)<br>shinchan.eat(&quot;小熊餅乾&quot;)<br></code></pre></td></tr></table></figure>
+
+<p>當然除了小新，我們也能用 Person 類別實例化出風間、正男、阿呆，他們都有自己的年齡身高，且都有吃東西這個行為。</p>
+<h3 id="查看屬性："><a href="#查看屬性：" class="headerlink" title="查看屬性："></a><font color=#d2691e>查看屬性：</font></h3><blockquote>
+<p>在 Python 中，我們可以透過 <code>dir()</code> 和 <code>__dict__</code> 來查看物件的屬性和方法。</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-built_in">dir</span>(Person)<br><span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-string">本身只有 __init__ 與 eat 方法，其餘皆繼承自父類。</span><br><span class="hljs-string">[&#x27;__class__&#x27;, &#x27;__delattr__&#x27;, &#x27;__dict__&#x27;, &#x27;__dir__&#x27;, &#x27;__doc__&#x27;, &#x27;__eq__&#x27;, &#x27;__format__&#x27;, &#x27;__ge__&#x27;, &#x27;__getattribute__&#x27;, &#x27;__gt__&#x27;, &#x27;__hash__&#x27;, &#x27;__init__&#x27;, &#x27;__init_subclass__&#x27;, &#x27;__le__&#x27;, &#x27;__lt__&#x27;, &#x27;__module__&#x27;, &#x27;__ne__&#x27;, &#x27;__new__&#x27;, &#x27;__reduce__&#x27;, &#x27;__reduce_ex__&#x27;, &#x27;__repr__&#x27;, &#x27;__setattr__&#x27;, &#x27;__sizeof__&#x27;, &#x27;__str__&#x27;, &#x27;__subclasshook__&#x27;, &#x27;__weakref__&#x27;, &#x27;eat&#x27;]</span><br><span class="hljs-string">&quot;&quot;&quot;</span><br><br><span class="hljs-built_in">dir</span>(shinchan)<br><span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-string">相較於 Person 類多了 age 與 height 屬性，因為屬性是在實例化後才被賦予的。</span><br><span class="hljs-string">[&#x27;__class__&#x27;, &#x27;__delattr__&#x27;, &#x27;__dict__&#x27;, &#x27;__dir__&#x27;, &#x27;__doc__&#x27;, &#x27;__eq__&#x27;, &#x27;__format__&#x27;, &#x27;__ge__&#x27;, &#x27;__getattribute__&#x27;, &#x27;__getstate__&#x27;, &#x27;__gt__&#x27;, &#x27;__hash__&#x27;, &#x27;__init__&#x27;, &#x27;__init_subclass__&#x27;, &#x27;__le__&#x27;, &#x27;__lt__&#x27;, &#x27;__module__&#x27;, &#x27;__ne__&#x27;, &#x27;__new__&#x27;, &#x27;__reduce__&#x27;, &#x27;__reduce_ex__&#x27;, &#x27;__repr__&#x27;, &#x27;__setattr__&#x27;, &#x27;__sizeof__&#x27;, &#x27;__str__&#x27;, &#x27;__subclasshook__&#x27;, &#x27;__weakref__&#x27;, &#x27;age&#x27;, &#x27;eat&#x27;, &#x27;height&#x27;]</span><br><span class="hljs-string">&quot;&quot;&quot;</span><br><br>Person.__dict__<br><span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-string">&#123;&#x27;__module__&#x27;: &#x27;__main__&#x27;, &#x27;__init__&#x27;: &lt;function Person.__init__ at 0x7fe6f5adde50&gt;, &#x27;eat&#x27;: &lt;function Person.eat at 0x7fe6f5addee0&gt;, &#x27;__dict__&#x27;: &lt;attribute &#x27;__dict__&#x27; of &#x27;Person&#x27; objects&gt;, &#x27;__weakref__&#x27;: &lt;attribute &#x27;__weakref__&#x27; of &#x27;Person&#x27; objects&gt;, &#x27;__doc__&#x27;: None&#125;</span><br><span class="hljs-string">&quot;&quot;&quot;</span><br><br>shinchan.__dict__<br><span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-string">&#123;&#x27;age&#x27;: 5, &#x27;height&#x27;: 100&#125;</span><br><span class="hljs-string">&quot;&quot;&quot;</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="dir-和-dict-差異："><a href="#dir-和-dict-差異：" class="headerlink" title="dir() 和 __dict__ 差異："></a><font color=#6495ed><code>dir()</code> 和 <code>__dict__</code> 差異：</font></h4><blockquote>
+<p><strong><code>__dict__</code> 是 <code>dir()</code> 的子集</strong>，<code>dir()</code> 包含 <code>__dict__</code> 中的屬性！</p>
+</blockquote>
+<p><code>dir()</code> 返回的會是一個 List，裡面為物件的所有屬性和方法名（包括從父類繼承來的）。<br><code>__dict__</code> 返回的是一個 Dict，裡面會包含屬性名和對應的值（不過僅會有該實例本身的屬性）。</p>
+<h2 id="總結："><a href="#總結：" class="headerlink" title="總結："></a>總結：</h2><p>今天這篇文章跟大家粗淺的介紹了物件和類別是什麼，這邊再跟大家做最後的總結。</p>
+<p>類別可以想像成一張<strong>設計圖</strong>，裡面描述了各種行為特徵。而物件則是類別所產生的<strong>特定實體</strong>。<br>例如：「人」這個類別是用來描述什麼是人，能做到什麼，有什麼屬性。而小新這個物件則是透過「人」類別建立的特定的人，有自己的年齡身高屬性，也有吃東西這個行為。</p>
+<h2 id="參考資料："><a href="#參考資料：" class="headerlink" title="參考資料："></a>參考資料：</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://www.maxlist.xyz/2021/01/11/python-object/#google_vignette">Python 基礎教學：一切皆為物件，到底什麼是物件 Object ?</a></li>
+<li><a target="_blank" rel="noopener" href="https://igouist.github.io/post/2020/07/oo-1-class-object/">菜雞與物件導向 (1)：類別、物件</a></li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Programming/" class="category-chain-item">Programming</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/Programming/Python/" class="category-chain-item">Python</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/OOP/" class="print-no-link">#OOP</a>
+      
+        <a href="/tags/Python/" class="print-no-link">#Python</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Python 與物件導向（一）：類別與物件</div>
+      <div>https://jamiechen-1230.github.io/2023/08/01/python-oop-object/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Duke</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>發布於</div>
+          <div>2023年8月1日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>許可協議</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/08/02/python-oop-three-principles/" title="Python 與物件導向（二）：類別的三大特性">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Python 與物件導向（二）：類別的三大特性</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/07/06/SQL_Injection/" title="Web 資安系列（六）- SQL Injection">
+                        <span class="hidden-mobile">Web 資安系列（六）- SQL Injection</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目錄</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜尋</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">關鍵字</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允許 JavaScript 運行的環境下瀏覽效果更佳</div>
+  </noscript>
+</body>
+</html>

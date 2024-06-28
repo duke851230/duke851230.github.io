@@ -1,0 +1,709 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-TW" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/avatar2.jpg">
+  <link rel="icon" href="/img/avatar2.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Duke">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="接下來要講講熟悉物件導向設計的工程師都不陌生的三大特性——封裝、繼承與多型。如果不熟悉類別與物件的朋友們，可以參考我的上一篇文章：Python 與物件導向（一）：類別與物件。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python 與物件導向（二）：類別的三大特性">
+<meta property="og:url" content="https://jamiechen-1230.github.io/2023/08/02/python-oop-three-principles/index.html">
+<meta property="og:site_name" content="小小後端の冒險">
+<meta property="og:description" content="接下來要講講熟悉物件導向設計的工程師都不陌生的三大特性——封裝、繼承與多型。如果不熟悉類別與物件的朋友們，可以參考我的上一篇文章：Python 與物件導向（一）：類別與物件。">
+<meta property="og:locale" content="zh_TW">
+<meta property="article:published_time" content="2023-08-01T16:00:00.000Z">
+<meta property="article:modified_time" content="2024-06-28T07:59:29.041Z">
+<meta property="article:author" content="Duke">
+<meta property="article:tag" content="OOP">
+<meta property="article:tag" content="Python">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>Python 與物件導向（二）：類別的三大特性 - 小小後端の冒險</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"jamiechen-1230.github.io","root":"/","version":"1.9.5","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 60vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>小小後端の冒險</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首頁</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>文章</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分類</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>標籤</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>關於</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/plant.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Python 與物件導向（二）：類別的三大特性"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-08-02 00:00" pubdate>
+          2023年8月2日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.8k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          32 分鐘
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Python 與物件導向（二）：類別的三大特性</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>接下來要講講熟悉物件導向設計的工程師都不陌生的三大特性——封裝、繼承與多型。如果不熟悉類別與物件的朋友們，可以參考我的上一篇文章：<a target="_blank" rel="noopener" href="https://duke851230.github.io/2023/08/01/python-oop-object/">Python 與物件導向（一）：類別與物件</a>。</p>
+<span id="more"></span>
+
+
+<h2 id="為什麼需要學習這個酷東西呢？"><a href="#為什麼需要學習這個酷東西呢？" class="headerlink" title="為什麼需要學習這個酷東西呢？"></a>為什麼需要學習這個酷東西呢？</h2><blockquote>
+<p>你可能會有疑問，為什麼每次在提到物件導向設計時，總是會伴隨著「封裝」、「繼承」、「多型」這幾個詞彙？</p>
+</blockquote>
+<p>這是因為好好善用這幾個原則的話，可以讓我們的程式碼更加模組化且易於維護。</p>
+<h2 id="封裝（Encapsulation）："><a href="#封裝（Encapsulation）：" class="headerlink" title="封裝（Encapsulation）："></a>封裝（Encapsulation）：</h2><p>封裝主要是為了做到兩件事：</p>
+<ol>
+<li>控制與外部進行互動的出入口，對外部僅<strong>提供有限的接口</strong>來訪問。</li>
+<li>隱藏內部的實現細節</li>
+</ol>
+<blockquote>
+<p>如果以電視遙控器來舉例的話，當我們按了開機鍵，我們<strong>不需要知道它背後是以什麼原理運作的</strong>，我們只要知道當我們按下它後，電視就會被打開。</p>
+</blockquote>
+<p>在程式設計中也是如此，外部使用者不需考慮我們類別內部的實作細節，就可以直接呼叫使用。且因為只提供「有限的接口」給外部使用，也可以避免物件被不正確的使用和修改，提高程式碼的穩定性。</p>
+<h3 id="程式範例："><a href="#程式範例：" class="headerlink" title="程式範例："></a><font color=#d2691e>程式範例：</font></h3><p>這邊有一個 Person 類別，我們有開放 height 的讀寫接口和 birthday 的讀接口，因為<strong>出生日是固定的不能被修改</strong>。</p>
+<blockquote>
+<p>我們可以簡單理解 <code>__&#123;variable&#125;</code> 為私有屬性（不能直接被外部讀寫）。但我們在之後有使用 <code>@property</code> 裝飾器，來提供一個名為 birthday 的<strong>唯讀接口</strong>。  </p>
+</blockquote>
+<blockquote>
+<p><code>@property</code> 裝飾器簡單來說就是，讓被裝飾的方法可以像調用屬性那樣被調用。（在此範例就是可以用 <code>&#123;object&#125;.birthday</code> 來調用 <code>birthday()</code> 方法）</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> datetime <span class="hljs-keyword">import</span> date<br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Person</span>:<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self, birthday: date, height: <span class="hljs-built_in">int</span></span>) -&gt; <span class="hljs-literal">None</span>:<br>        self.__birthday: date = birthday<br>        self.height: <span class="hljs-built_in">int</span> = height<br><br><span class="hljs-meta">    @property</span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">birthday</span>(<span class="hljs-params">self</span>) -&gt; date:<br>        <span class="hljs-keyword">return</span> self.__birthday<br></code></pre></td></tr></table></figure>
+
+<p>從下面的範例程式我們可以看到：</p>
+<ul>
+<li><code>height</code> 因為沒有加以限制，所以可以直接被外部讀寫。</li>
+<li><code>__birthday</code> 因為被定義成私有屬性，所以不能被外部讀寫。但我們有額外提供 <code>birthday</code> 接口供外部讀取 <code>__birthday</code> 屬性（沒有提供寫的權力）。</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs python">duke: Person = Person(birthday=date(<span class="hljs-number">1996</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>), height=<span class="hljs-number">179</span>)<br><span class="hljs-built_in">print</span>(duke.height)  <span class="hljs-comment"># 179</span><br>duke.height = <span class="hljs-number">180</span>   <span class="hljs-comment"># 不會 Error，因為有公開 height 屬性給外部修改</span><br><span class="hljs-built_in">print</span>(duke.height)  <span class="hljs-comment"># 180</span><br><br><span class="hljs-comment"># print(duke.__birthday)  # AttributeError: &#x27;Person&#x27; object has no attribute &#x27;__birthday&#x27;，因為是私有屬性外部讀不到</span><br><br><span class="hljs-built_in">print</span>(duke.birthday)  <span class="hljs-comment"># 1996-01-01</span><br>duke.birthday = date(<span class="hljs-number">2000</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>)  <span class="hljs-comment"># AttributeError: can&#x27;t set attribute，因為沒有開放給別人修改出生日的權力</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="延神閱讀："><a href="#延神閱讀：" class="headerlink" title="延神閱讀："></a><font color=#d2691e>延神閱讀：</font></h3><p>其實 Python 本身是沒有像 Java 那樣提供真正的私有屬性，所以我們真的硬要讀寫 <code>__&#123;variable&#125;</code> 是做得到的，只是通常沒人會這樣做。</p>
+<p>只要透過 <code>_&#123;class&#125;__&#123;variable&#125;</code> 就可以強制讀寫「<strong>俗成上</strong>的私有屬性」。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python">duke: Person = Person(birthday=date(<span class="hljs-number">1996</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>), height=<span class="hljs-number">179</span>)<br><span class="hljs-built_in">print</span>(duke._Person__birthday)  <span class="hljs-comment"># 1996-01-01</span><br></code></pre></td></tr></table></figure>
+
+
+<h2 id="繼承（Inheritance）："><a href="#繼承（Inheritance）：" class="headerlink" title="繼承（Inheritance）："></a>繼承（Inheritance）：</h2><blockquote>
+<p><strong>繼承是一種「is-a」的關係</strong>，當你能說出Ａ是一個Ｂ的時候，就代表你認為Ａ可以繼承自Ｂ。</p>
+</blockquote>
+<p>使用繼承，可以讓「子類」獲取「父類」的屬性和方法，並且在此基礎上擴展自己的屬性和方法。這樣可以節省重複性的程式碼，使程式碼更加簡潔。</p>
+<p>但正是因為繼承很方便，所以容易遭到濫用，導致程式碼變得複雜且難以維護，不過這留到之後的篇章再來跟大家聊聊。</p>
+<h3 id="程式範例：-1"><a href="#程式範例：-1" class="headerlink" title="程式範例："></a><font color=#d2691e>程式範例：</font></h3><p>這邊提供了一個最簡單的範例，來告訴大家子類可以繼承父類的所有屬性和方法（不包括 <code>__&#123;variable&#125;</code>）。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Animal</span>:<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self, name</span>) -&gt; <span class="hljs-literal">None</span>:<br>        self.name = name<br>    <br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">eat</span>(<span class="hljs-params">self</span>) -&gt; <span class="hljs-literal">None</span>:<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;<span class="hljs-subst">&#123;self.name&#125;</span> is eating.&quot;</span>)<br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Dog</span>(<span class="hljs-title class_ inherited__">Animal</span>):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">bark</span>(<span class="hljs-params">self</span>) -&gt; <span class="hljs-literal">None</span>:<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;<span class="hljs-subst">&#123;self.name&#125;</span> is barking.&quot;</span>)<br><br><br>dog: Dog = Dog(<span class="hljs-string">&quot;Buddy&quot;</span>)<br>dog.eat()  <span class="hljs-comment"># 繼承了 Animal 類別的 eat() 方法</span><br>dog.bark() <span class="hljs-comment"># Dog 類別自定義的 bark() 方法</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="延神閱讀：那私有屬性和方法會被繼承嗎？"><a href="#延神閱讀：那私有屬性和方法會被繼承嗎？" class="headerlink" title="延神閱讀：那私有屬性和方法會被繼承嗎？"></a><font color=#d2691e>延神閱讀：那私有屬性和方法會被繼承嗎？</font></h3><p>答案是「不會被繼承」。</p>
+<p>透過以下範例看得出來，我們無法在 Asian 類中直接透過 <code>self.__race</code> 拿到 Person 類的私有屬性。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Person</span>:<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self, name: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-literal">None</span>:<br>        self.__race: <span class="hljs-built_in">str</span> = <span class="hljs-string">&quot;人族&quot;</span><br>        self.name = name<br><br><span class="hljs-comment"># 黃種人</span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Asian</span>(<span class="hljs-title class_ inherited__">Person</span>):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">get_name</span>(<span class="hljs-params">self</span>) -&gt; <span class="hljs-literal">None</span>:<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;My name is <span class="hljs-subst">&#123;self.name&#125;</span>.&quot;</span>)<br>    <br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">get_race</span>(<span class="hljs-params">self</span>) -&gt; <span class="hljs-literal">None</span>:<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;My race is <span class="hljs-subst">&#123;self.__race&#125;</span>.&quot;</span>)<br>    <br><br>duke: Asian = Asian(<span class="hljs-string">&quot;duke&quot;</span>)<br>duke.get_name()  <span class="hljs-comment"># My name is duke.</span><br>duke.get_race()  <span class="hljs-comment"># AttributeError: &#x27;Asian&#x27; object has no attribute &#x27;_Asian__race&#x27;，因為透過 self 去找 __variable 時會自動帶上類名去找</span><br></code></pre></td></tr></table></figure>
+
+<p>但簡單做個小更改就可以讓 Asian 的實例去讀取 race 屬性：<br>我們將 <code>get_race()</code> 移至 Person 類，這樣 <code>self.__race</code> 就能訪問到屬於 Person 本身的私有屬性了。而且因為 <code>get_race()</code> 不是私有方法，所以可被 Asian 類繼承。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Person</span>:<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self, name: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-literal">None</span>:<br>        self.__race: <span class="hljs-built_in">str</span> = <span class="hljs-string">&quot;人族&quot;</span><br>        self.name = name<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">get_race</span>(<span class="hljs-params">self</span>) -&gt; <span class="hljs-literal">None</span>:<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;My race is <span class="hljs-subst">&#123;self.__race&#125;</span>.&quot;</span>)<br><br><span class="hljs-comment"># 黃種人</span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Asian</span>(<span class="hljs-title class_ inherited__">Person</span>):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">get_name</span>(<span class="hljs-params">self</span>) -&gt; <span class="hljs-literal">None</span>:<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;My name is <span class="hljs-subst">&#123;self.name&#125;</span>.&quot;</span>)<br><br>duke: Asian = Asian(<span class="hljs-string">&quot;duke&quot;</span>)<br>duke.get_name()  <span class="hljs-comment"># My name is duke.</span><br>duke.get_race()  <span class="hljs-comment"># My race is 人族.</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="多型（Polymorphism）："><a href="#多型（Polymorphism）：" class="headerlink" title="多型（Polymorphism）："></a>多型（Polymorphism）：</h2><blockquote>
+<p>簡單的說，就是<strong>不同人做一樣的事，會有不同的做法</strong>。</p>
+</blockquote>
+<p>通常會跟繼承一起使用，多型是指同一方法可以<strong>根據不同的物件類型而有不同的實現方式</strong>，這樣可以讓程式更加靈活。</p>
+<h3 id="程式範例：-2"><a href="#程式範例：-2" class="headerlink" title="程式範例："></a><font color=#d2691e>程式範例：</font></h3><p>我們知道貓和狗的叫聲是不一樣的，所以 <code>Dog</code> 和 <code>Cat</code> 類分別實作了 <code>say()</code> 方法來模擬叫聲。<br>之後我們根據不同實例（來自於實現 <code>Dog</code> 和 <code>Cat</code> 類）來呼叫 <code>say()</code> 方法，就會發現叫聲會隨著實例的類別不同而改變，這就是「多型」。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> abc <span class="hljs-keyword">import</span> ABC, abstractmethod<br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Animal</span>(<span class="hljs-title class_ inherited__">ABC</span>):<br><span class="hljs-meta">    @abstractmethod</span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">say</span>(<span class="hljs-params">self</span>) -&gt; <span class="hljs-literal">None</span>:<br>        <span class="hljs-keyword">pass</span><br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Dog</span>(<span class="hljs-title class_ inherited__">Animal</span>):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">say</span>(<span class="hljs-params">self</span>) -&gt; <span class="hljs-literal">None</span>:<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;汪汪汪！&quot;</span>)<br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Cat</span>(<span class="hljs-title class_ inherited__">Animal</span>):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">say</span>(<span class="hljs-params">self</span>) -&gt; <span class="hljs-literal">None</span>:<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;喵喵喵！&quot;</span>)<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">make_sound</span>(<span class="hljs-params">animal: Animal</span>) -&gt; <span class="hljs-literal">None</span>:<br>    animal.say()<br><br><br>make_sound(Dog())  <span class="hljs-comment"># 汪汪汪！，Dog 物件呼叫自己的 say() 方法</span><br>make_sound(Cat())  <span class="hljs-comment"># 喵喵喵！，Cat 物件呼叫自己的 say() 方法</span><br></code></pre></td></tr></table></figure>
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Programming/" class="category-chain-item">Programming</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/Programming/Python/" class="category-chain-item">Python</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/OOP/" class="print-no-link">#OOP</a>
+      
+        <a href="/tags/Python/" class="print-no-link">#Python</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Python 與物件導向（二）：類別的三大特性</div>
+      <div>https://jamiechen-1230.github.io/2023/08/02/python-oop-three-principles/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Duke</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>發布於</div>
+          <div>2023年8月2日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>許可協議</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/08/03/python-oop-override-overload/" title="Python 與物件導向（三）：覆寫與多載">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Python 與物件導向（三）：覆寫與多載</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/08/01/python-oop-object/" title="Python 與物件導向（一）：類別與物件">
+                        <span class="hidden-mobile">Python 與物件導向（一）：類別與物件</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目錄</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜尋</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">關鍵字</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允許 JavaScript 運行的環境下瀏覽效果更佳</div>
+  </noscript>
+</body>
+</html>

@@ -1,0 +1,761 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-TW" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/avatar2.jpg">
+  <link rel="icon" href="/img/avatar2.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Duke">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="接下來就來跟大家分享大名鼎鼎的 SOLID 原則，讓我們可以少寫出富含臭味的程式碼。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python 與物件導向（五）：SOLID 原則">
+<meta property="og:url" content="https://jamiechen-1230.github.io/2023/08/05/python-oop-solid/index.html">
+<meta property="og:site_name" content="小小後端の冒險">
+<meta property="og:description" content="接下來就來跟大家分享大名鼎鼎的 SOLID 原則，讓我們可以少寫出富含臭味的程式碼。">
+<meta property="og:locale" content="zh_TW">
+<meta property="article:published_time" content="2023-08-04T16:00:00.000Z">
+<meta property="article:modified_time" content="2024-06-28T07:59:29.041Z">
+<meta property="article:author" content="Duke">
+<meta property="article:tag" content="OOP">
+<meta property="article:tag" content="Python">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>Python 與物件導向（五）：SOLID 原則 - 小小後端の冒險</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"jamiechen-1230.github.io","root":"/","version":"1.9.5","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 60vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>小小後端の冒險</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首頁</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>文章</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分類</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>標籤</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>關於</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/plant.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Python 與物件導向（五）：SOLID 原則"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-08-05 00:00" pubdate>
+          2023年8月5日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          6.9k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          58 分鐘
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Python 與物件導向（五）：SOLID 原則</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>接下來就來跟大家分享大名鼎鼎的 SOLID 原則，讓我們可以少寫出富含臭味的程式碼。</p>
+<span id="more"></span>
+
+
+<h2 id="先來講講為什麼我們需要-SOLID-原則？"><a href="#先來講講為什麼我們需要-SOLID-原則？" class="headerlink" title="先來講講為什麼我們需要 SOLID 原則？"></a>先來講講為什麼我們需要 SOLID 原則？</h2><blockquote>
+<p>大家有興趣可以參考我之前的文章：<br><a target="_blank" rel="noopener" href="https://duke851230.github.io/2023/08/02/python-oop-three-principles/">Python 與物件導向（二）：類別的三大特性</a><br><a target="_blank" rel="noopener" href="https://duke851230.github.io/2023/08/03/python-oop-override-overload/">Python 與物件導向（三）：覆寫與多載</a></p>
+</blockquote>
+<p>在前面的文章中，已經跟大家介紹了物件導向的基本特性。但僅僅知道如何使用是沒有用的，真的難的是怎麼利用這些特性寫出人人稱羨的 Clean Code。</p>
+<p>最常見臭味四溢的程式碼就是<strong>濫用繼承</strong>。假設我們的程式會是一連串的繼承（父類 -&gt; 子類 -&gt; 孫子類…），這樣如果一改動父類的程式，就會造成一連串的連鎖效應，所有繼承父類的程式都會受到影響，這聽起來是不是臭味滿滿呢XD</p>
+<blockquote>
+<p>SOLID 原則就是大神們統整出來的五大心法，只要牢記這些心法去寫程式，至少能寫出不太臭的程式。</p>
+</blockquote>
+<p>所謂<strong>乾淨的程式碼是要做到「可容忍需求變化」且「易於理解」</strong>，這說起來簡單，但實際要做到還真的不容易。大家有沒有遇過客戶的需求突然改變的情況，如果我們一開始沒有做好「<strong>程式設計</strong>」，之後修改需求時就很像在修補衣服，東補一塊西補一塊，全部程式都攪在一起。</p>
+<h2 id="單一職責原則（Single-Responsibility-Principle）："><a href="#單一職責原則（Single-Responsibility-Principle）：" class="headerlink" title="單一職責原則（Single Responsibility Principle）："></a>單一職責原則（Single Responsibility Principle）：</h2><blockquote>
+<p>這些原則不只適用於類別，像是 Module、Function 也都適用，只是<strong>職責的範圍規模不同</strong>而已。</p>
+</blockquote>
+<p>從字面上來看，SRP 原則就是說<strong>一個類別只負責一個「職責」</strong>，避免將過多職責寫在同一類別。這樣說你們可能還是有點模糊，但如果想成<font color=#FF0000><strong>一個類別只能有一個被修改的理由</strong></font>，可能就更加明確了。</p>
+<h3 id="簡單範例："><a href="#簡單範例：" class="headerlink" title="簡單範例："></a><font color=#d2691e>簡單範例：</font></h3><blockquote>
+<p>這邊用函數來舉例。</p>
+</blockquote>
+<p>假設 <code>create_a_order()</code> 要做兩件事：「資料庫紀錄訂單資訊」、「寄訂單資訊給買家」。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">create_a_order</span>(<span class="hljs-params">order: <span class="hljs-built_in">dict</span></span>):<br>    <span class="hljs-comment"># 資料庫新增一筆訂單</span><br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Create a order record&quot;</span>)<br><br>    <span class="hljs-comment"># 寄訂單資訊給買家</span><br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Send email to customer&quot;</span>)<br></code></pre></td></tr></table></figure>
+<p>這很明顯違反了 SRP 原則，因為被修改的理由不只一個：</p>
+<ol>
+<li>資料庫原本沒有紀錄買家資訊，現在要紀錄 &#x3D;&gt; 這會動到「資料庫紀錄訂單資訊」</li>
+<li>原本是用 Email 聯繫買家，現在要改用簡訊 &#x3D;&gt; 這會動到「寄訂單資訊給買家」</li>
+</ol>
+<p>所以我們應該將它拆解，讓一個函數只負責做一件事。例如用 <code>create_a_order_record()</code> 來處理資料庫新增紀錄，<code>send_order_info_to_customer()</code> 來負責寄信聯絡買家。而 <code>create_a_order()</code> 本身則只用來做流程控制，<strong>這樣每個函數都只有一個被修改的理由</strong>。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">create_a_order</span>(<span class="hljs-params">order: <span class="hljs-built_in">dict</span></span>):<br>    create_a_order_record(order)<br>    send_order_info_to_customer(order[<span class="hljs-string">&quot;customer_email&quot;</span>], order)<br>    <br><span class="hljs-keyword">def</span> <span class="hljs-title function_">create_a_order_record</span>(<span class="hljs-params">order: <span class="hljs-built_in">dict</span></span>):<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Create a order record&quot;</span>)<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">send_order_info_to_customer</span>(<span class="hljs-params">email: <span class="hljs-built_in">str</span>, order: <span class="hljs-built_in">dict</span></span>):<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Send email to customer&quot;</span>)<br></code></pre></td></tr></table></figure>
+<p>現在可能很多人會在想：函數不是為了用來消除重複的程式碼嗎？我切出來那麼多不可重複用的函數有什麼意義？<br>其實消除重複的程式碼只是其中一個作用而已。抽出函數更重要的是為了要<strong>「<font color=#FF0000>封裝程式邏輯</font>」</strong>，讓單一函數更<strong>單純、內聚</strong>，這樣 Debug 時就能更容易的鎖定問題所在。</p>
+<h2 id="開放封閉原則（Open-Close-Principle）："><a href="#開放封閉原則（Open-Close-Principle）：" class="headerlink" title="開放封閉原則（Open-Close Principle）："></a>開放封閉原則（Open-Close Principle）：</h2><p>軟體實體（模組、類別、函數）都應該<font color=#FF0000><strong>對擴展開放，而對修改封閉</strong></font>。意思是在說當需求變更時，應該是要透過<strong>新增程式碼來取代原有模組，而不是直接更改原有的程式碼</strong>。</p>
+<h3 id="什麼是修改？什麼是擴展？"><a href="#什麼是修改？什麼是擴展？" class="headerlink" title="什麼是修改？什麼是擴展？"></a><font color=#d2691e>什麼是修改？什麼是擴展？</font></h3><p>用現實世界來舉例，假設我們現在筆電鍵盤不好用。如果是直接把筆電鍵盤的鍵帽拔掉換成新的，這就是修改；如果我們是買一個機械式鍵盤並透過 USB 外接，這就是擴展。</p>
+<p>那直接拔鍵帽換新的不是很方便又便宜嗎？為什麼還要花大錢買一個新鍵盤？<br>那是因為你沒想過換鍵帽的<strong>副作用</strong>，假設你在拔鍵帽時不小心用壞了下面的電路，這樣可能會影響到其他元件的運作。但如果我們是用新鍵盤來外接，就不會動到原有的元件了，更加安全穩定。</p>
+<p>在程式中也是一樣，你不會知道你接手的程式有多少奇怪的邏輯包含在其中。如果我們隨便更改，很容易造成<strong>修好了 A，卻用壞了 B 的窘境</strong>，所以為了要寫出好擴展的程式碼，我們就需要將程式「<strong>模組化</strong>」。</p>
+<blockquote>
+<p>而上述的筆電例子是如何做到「模組化」的呢？就是要預留「<strong>擴充點</strong>」，也就是 USB 接口，讓我們能外接鍵盤。</p>
+</blockquote>
+<p>所以我們寫程式也是如此，盡量將程式模組化。每個模組都透過預留的「<strong>對外接口</strong>」插入其他模組來運行，這樣需求改變時，我們只要根據規範定義出另一個模組就能插入「對外接口」來使用了。</p>
+<p>聽到定義規範大家有沒有很熟悉？沒錯就是利用我們之前所講的「抽象類別」與「介面」。大家可以參考之前的文章：<a target="_blank" rel="noopener" href="https://duke851230.github.io/2023/08/04/python-oop-abstract-interface/">Python 與物件導向（四）：抽象類別與介面</a>。</p>
+<h3 id="簡單範例：-1"><a href="#簡單範例：-1" class="headerlink" title="簡單範例："></a><font color=#d2691e>簡單範例：</font></h3><blockquote>
+<p>我們常聽到的「策略模式」就是利用了開放封閉原則原則，所以這邊用一個簡單的策略模式程式來舉例。</p>
+</blockquote>
+<p><code>calculate_two_float()</code> 是我的主要程式，且它預留了一個擴充點（<code>operator</code> 參數）來讓我們插入運算子。這樣如果需求改變，像是要改用除法，我只要在新增一個 <code>DivisionOperator</code> 即可。</p>
+<blockquote>
+<p>需求變更時，我們不再是直接暴力的去修改主程式（<code>calculate_two_float()</code>）中的程式碼，而是透過新增一個 <code>Operator</code> 子類來外接。</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> abc <span class="hljs-keyword">import</span> ABC, abstractmethod<br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Operator</span>(<span class="hljs-title class_ inherited__">ABC</span>):<br><span class="hljs-meta">    @abstractmethod</span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">calculate</span>(<span class="hljs-params">self, a: <span class="hljs-built_in">float</span>, b: <span class="hljs-built_in">float</span></span>) -&gt; <span class="hljs-built_in">float</span>:<br>        <span class="hljs-keyword">pass</span><br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">AddOperator</span>(<span class="hljs-title class_ inherited__">Operator</span>):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">calculate</span>(<span class="hljs-params">self, a: <span class="hljs-built_in">float</span>, b: <span class="hljs-built_in">float</span></span>) -&gt; <span class="hljs-built_in">float</span>:<br>        <span class="hljs-keyword">return</span> a + b<br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">MinusOperator</span>(<span class="hljs-title class_ inherited__">Operator</span>):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">calculate</span>(<span class="hljs-params">self, a: <span class="hljs-built_in">float</span>, b: <span class="hljs-built_in">float</span></span>) -&gt; <span class="hljs-built_in">float</span>:<br>        <span class="hljs-keyword">return</span> a - b<br><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">calculate_two_float</span>(<span class="hljs-params">operator: Operator, a: <span class="hljs-built_in">float</span>, b: <span class="hljs-built_in">float</span></span>) -&gt; <span class="hljs-built_in">float</span>:<br>    res: <span class="hljs-built_in">float</span> = operator.calculate(a, b)<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;result: <span class="hljs-subst">&#123;res&#125;</span>&quot;</span>)<br>    <span class="hljs-keyword">return</span> res<br><br>calculate_two_float(AddOperator(), <span class="hljs-number">10</span>, <span class="hljs-number">5</span>)  <span class="hljs-comment"># 15</span><br>calculate_two_float(MinusOperator(), <span class="hljs-number">10</span>, <span class="hljs-number">5</span>)  <span class="hljs-comment"># 5</span><br></code></pre></td></tr></table></figure>
+
+
+<h2 id="里氏替換原則（Liskov-Substitution-Principle）："><a href="#里氏替換原則（Liskov-Substitution-Principle）：" class="headerlink" title="里氏替換原則（Liskov Substitution Principle）："></a>里氏替換原則（Liskov Substitution Principle）：</h2><p>主要概念就是：<font color=#FF0000><strong>子類必須能夠完全替換父類</strong></font>。<br>也就是說，假設我有一個模組的擴充點為一個類別。當之後要擴展時，我會去繼承這個擴充點類別，並覆寫裡面的方法。而當我將這個「擴充子類別」插入原有模組時，不應該發生異常，並能正確運行。</p>
+<p>而子類如何能夠完全替換父類呢？<br>主要是要做到兩點：「<strong>子類要求的不應該比父類別多</strong>」、「<strong>子類返回的不應該比父類別少</strong>」。</p>
+<ul>
+<li>要求指的是<strong>輸入參數</strong>。假設父類是「矩形」類別，要求兩個參數「長」跟「寬」。我們繼承的子類就不能是方形，因為會多要求長跟寬要一樣，不符合里氏替換原則。</li>
+<li>返回指的是<strong>返回值</strong>。假設父類是「方形」類別，會返回一個長寬等長的矩形。我們繼承的子類就不能隨便返回一個長方形，因為會減少返回的條件，這樣後續程式可能就會出錯。</li>
+</ul>
+<h3 id="簡單範例：-2"><a href="#簡單範例：-2" class="headerlink" title="簡單範例："></a><font color=#d2691e>簡單範例：</font></h3><p>這邊的 <code>BadSon</code> 就是因為沒有達到「<strong>子類返回的不應該比父類別少</strong>」，所以導致程式出錯。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Father</span>:<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">get_info</span>(<span class="hljs-params">self</span>) -&gt; <span class="hljs-built_in">dict</span>:<br>        <span class="hljs-keyword">return</span> &#123;<br>            <span class="hljs-string">&quot;name&quot;</span>: <span class="hljs-string">&quot;duke&quot;</span>,<br>            <span class="hljs-string">&quot;age&quot;</span>: <span class="hljs-number">18</span><br>        &#125;<br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">GoodSon</span>(<span class="hljs-title class_ inherited__">Father</span>):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">get_info</span>(<span class="hljs-params">self</span>) -&gt; <span class="hljs-built_in">dict</span>:<br>        <span class="hljs-keyword">return</span> &#123;<br>            <span class="hljs-string">&quot;name&quot;</span>: <span class="hljs-string">&quot;jamie&quot;</span>,<br>            <span class="hljs-string">&quot;age&quot;</span>: <span class="hljs-number">20</span><br>        &#125;<br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">BadSon</span>(<span class="hljs-title class_ inherited__">Father</span>):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">get_info</span>(<span class="hljs-params">self</span>) -&gt; <span class="hljs-built_in">dict</span>:<br>        <span class="hljs-keyword">return</span> &#123;<br>            <span class="hljs-string">&quot;name&quot;</span>: <span class="hljs-string">&quot;ken&quot;</span><br>        &#125;<br>    <br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">say_hello</span>(<span class="hljs-params">person: Father</span>) -&gt; <span class="hljs-literal">None</span>:<br>    info: <span class="hljs-built_in">dict</span> = person.get_info()<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Hi, I&#x27;m <span class="hljs-subst">&#123;info[<span class="hljs-string">&#x27;name&#x27;</span>]&#125;</span> and <span class="hljs-subst">&#123;info[<span class="hljs-string">&#x27;age&#x27;</span>]&#125;</span> years old.&quot;</span>)<br><br>say_hello(Father())  <span class="hljs-comment"># Hi, I&#x27;m duke and 18 years old.</span><br>say_hello(GoodSon())  <span class="hljs-comment"># Hi, I&#x27;m jamie and 20 years old.</span><br>say_hello(BadSon())  <span class="hljs-comment"># KeyError: &#x27;age&#x27;</span><br></code></pre></td></tr></table></figure>
+
+
+<h2 id="介面隔離原則（Interface-Segregation-Principle）："><a href="#介面隔離原則（Interface-Segregation-Principle）：" class="headerlink" title="介面隔離原則（Interface Segregation Principle）："></a>介面隔離原則（Interface Segregation Principle）：</h2><p>主要概念就是：<font color=#FF0000><strong>實做多個專門的介面比實做一個大而全的介面要好</strong></font>。<br>若一個介面定義太多要求，而我們的子類只需要其中一部份方法時，就只能放棄實做這個介面，或是用空實作和錯誤處理去欺騙介面。這是非常糙的程式碼，因為我們工程師就是透過介面加速理解程式，結果子類根本沒有介面有的方法，這會大大誤導我們。</p>
+<p>若發生上述的事件，就是在提醒我們<strong>介面太過臃種了，要拆分成幾個專門的小介面來實做</strong>。</p>
+<h3 id="簡單範例：-3"><a href="#簡單範例：-3" class="headerlink" title="簡單範例："></a><font color=#d2691e>簡單範例：</font></h3><p>像這個 <code>Bird</code> 介面是真的鳥，如果我們之後有了企鵝要去繼承時，就會發現它無法實現 <code>fly()</code> 方法。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Bird</span>(<span class="hljs-title class_ inherited__">ABC</span>):<br><span class="hljs-meta">    @abstractmethod</span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">fly</span>(<span class="hljs-params">self</span>): <br>        <span class="hljs-keyword">pass</span><br><br><span class="hljs-meta">    @abstractmethod</span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">eat</span>(<span class="hljs-params">self</span>): <br>        <span class="hljs-keyword">pass</span><br></code></pre></td></tr></table></figure>
+<p>所以我們要把 <code>Bird</code> 介面拆成 <code>CanFly</code> 和 <code>CanEat</code> 介面，之後去定義子類時再根據所需繼承即可。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> abc <span class="hljs-keyword">import</span> ABC, abstractmethod<br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">CanFly</span>(<span class="hljs-title class_ inherited__">ABC</span>):<br><span class="hljs-meta">    @abstractmethod</span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">fly</span>(<span class="hljs-params">self</span>): <br>        <span class="hljs-keyword">pass</span><br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">CanEat</span>(<span class="hljs-title class_ inherited__">ABC</span>):<br><span class="hljs-meta">    @abstractmethod</span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">eat</span>(<span class="hljs-params">self</span>): <br>        <span class="hljs-keyword">pass</span><br><br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">NormalBird</span>(CanFly, CanEat):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">fly</span>(<span class="hljs-params">self</span>): <br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;I can fly&quot;</span>)<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">eat</span>(<span class="hljs-params">self</span>): <br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;I can eat&quot;</span>)<br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Penguin</span>(<span class="hljs-title class_ inherited__">CanEat</span>):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">eat</span>(<span class="hljs-params">self</span>): <br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;I can eat&quot;</span>)<br></code></pre></td></tr></table></figure>
+
+
+<h2 id="依賴反轉原則（Dependency-Inversion-Principle）："><a href="#依賴反轉原則（Dependency-Inversion-Principle）：" class="headerlink" title="依賴反轉原則（Dependency-Inversion Principle）："></a>依賴反轉原則（Dependency-Inversion Principle）：</h2><p>什麼是依賴？<br>依賴就是一種<strong>受到牽制</strong>的感覺。例如老菸槍沒有煙就會活不下去，代表老菸槍依賴香煙。<br>而程式中也是如此，如果 <strong>Ａ 會直接受到 Ｂ 的影響，就表示 Ａ 依賴了 Ｂ</strong>。例如使用「SQL 查詢」前要先進行「資料庫連線」，所以表示「SQL 查詢」會依賴「資料庫連線」。</p>
+<h4 id="依賴反轉原則的主要概念如下："><a href="#依賴反轉原則的主要概念如下：" class="headerlink" title="依賴反轉原則的主要概念如下："></a><font color=#6495ed>依賴反轉原則的主要概念如下：</font></h4><p>目的是要解除「高階模組 (呼叫者) 」與「低階模組 (被呼叫者)」間的耦合關係，使高階模組<strong>不再直接依賴</strong>低階模組。因為真正需要依賴的，並<strong>不是實際的類別、物件，而是它所擁有的功能</strong>。</p>
+<ol>
+<li><p><strong>高階模組不應該依賴於低階模組。兩者都應該依賴抽象：</strong></p>
+<blockquote>
+<p>原本是 <code>高階模組(SQL 查詢) -&gt; 低階模組(資料庫連線)</code> 的關係，<br>變成了 <code>高階模組(SQL 查詢) -&gt; 介面(提供 get_cursor 方法) &lt;- 低階模組(資料庫連線)</code>。</p>
+</blockquote>
+<p>雖然我們知道「SQL 查詢」會依賴「資料庫連線」。但「SQL 查詢」不應該直接去依賴「資料庫連線」，而是<strong>藉由抽象（例如定義一個介面，裡面有 <code>get_cursor()</code> 的方法）來隔開</strong>。</p>
+</li>
+<li><p><strong>抽象不應該依賴具體實做；具體實做應該依賴抽象：</strong></p>
+<blockquote>
+<p>原本是 <code>高階模組 -(建立)-&gt; 低階模組</code>，<br>變成了 <code>高階模組 &lt;-(傳遞低階模組)- 控制反轉中心</code>。</p>
+</blockquote>
+<p>簡單來說就是我們原本會把<strong>「建立資料庫連線」的具體實做</strong>放在「查詢函數」中，但這樣就表示我們還是在依賴它。所以我們應該將它提出，並通過參數的方式傳進「查詢函數」裡。</p>
+</li>
+</ol>
+<h3 id="簡單範例：-4"><a href="#簡單範例：-4" class="headerlink" title="簡單範例："></a><font color=#d2691e>簡單範例：</font></h3><p>假設我們現在有個計算兩浮點數的函數：</p>
+<blockquote>
+<p>目前因為要用加法，所以我們直接寫死 <code>a+b</code>。</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">calculate_two_float</span>(<span class="hljs-params">a: <span class="hljs-built_in">float</span>, b: <span class="hljs-built_in">float</span></span>) -&gt; <span class="hljs-built_in">float</span>:<br>    <span class="hljs-keyword">return</span> a + b<br></code></pre></td></tr></table></figure>
+
+<p>但如果我們之後要換成「減法」，就只能透過修改 <code>calculate_two_float()</code> 函數，將 <code>a+b</code> 改成 <code>a-b</code>。</p>
+<p>所以我們要依照「<strong>高階模組不應該依賴於低階模組。兩者都應該依賴抽象</strong>」準則，創造一個介面來解偶兩者，如下所示： </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> abc <span class="hljs-keyword">import</span> ABC, abstractmethod<br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Operator</span>(<span class="hljs-title class_ inherited__">ABC</span>):<br><span class="hljs-meta">    @abstractmethod</span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">calculate</span>(<span class="hljs-params">self, a: <span class="hljs-built_in">float</span>, b: <span class="hljs-built_in">float</span></span>) -&gt; <span class="hljs-built_in">float</span>:<br>        <span class="hljs-keyword">pass</span><br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">AddOperator</span>(<span class="hljs-title class_ inherited__">Operator</span>):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">calculate</span>(<span class="hljs-params">self, a: <span class="hljs-built_in">float</span>, b: <span class="hljs-built_in">float</span></span>) -&gt; <span class="hljs-built_in">float</span>:<br>        <span class="hljs-keyword">return</span> a + b<br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">MinusOperator</span>(<span class="hljs-title class_ inherited__">Operator</span>):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">calculate</span>(<span class="hljs-params">self, a: <span class="hljs-built_in">float</span>, b: <span class="hljs-built_in">float</span></span>) -&gt; <span class="hljs-built_in">float</span>:<br>        <span class="hljs-keyword">return</span> a - b<br><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">calculate_two_float</span>(<span class="hljs-params">a: <span class="hljs-built_in">float</span>, b: <span class="hljs-built_in">float</span></span>) -&gt; <span class="hljs-built_in">float</span>:<br>    operator: Operator = AddOperator()<br>    <span class="hljs-keyword">return</span> operator.calculate(a, b)<br></code></pre></td></tr></table></figure>
+
+<p>但這樣還不夠，我們換成減法時還是要去修改 <code>calculate_two_float()</code> 函數，將 <code>AddOperator</code> 改成 <code>MinusOperator</code>，這樣還是違反「開放封閉原則」。</p>
+<blockquote>
+<p>而且這邊有個大問題，就是如果我們都有了介面（<code>Operator</code>），那就不應該直接去實例化 <code>AddOperator</code>，因為這樣介面就沒有存在的意義了。</p>
+</blockquote>
+<p>所以我們還須依照「<strong>抽象不應該依賴具體實做；具體實做應該依賴抽象</strong>」準則，做到「控制反轉」。也就是說，<strong>不能讓具體實做子類的實例化放在模塊中</strong>，如下所示：</p>
+<blockquote>
+<p>讓<strong>介面成為參數的約束</strong>，我們只要保證參數有 <code>calculate()</code> 這個能力即可。</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> abc <span class="hljs-keyword">import</span> ABC, abstractmethod<br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Operator</span>(<span class="hljs-title class_ inherited__">ABC</span>):<br><span class="hljs-meta">    @abstractmethod</span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">calculate</span>(<span class="hljs-params">self, a: <span class="hljs-built_in">float</span>, b: <span class="hljs-built_in">float</span></span>) -&gt; <span class="hljs-built_in">float</span>:<br>        <span class="hljs-keyword">pass</span><br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">AddOperator</span>(<span class="hljs-title class_ inherited__">Operator</span>):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">calculate</span>(<span class="hljs-params">self, a: <span class="hljs-built_in">float</span>, b: <span class="hljs-built_in">float</span></span>) -&gt; <span class="hljs-built_in">float</span>:<br>        <span class="hljs-keyword">return</span> a + b<br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">MinusOperator</span>(<span class="hljs-title class_ inherited__">Operator</span>):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">calculate</span>(<span class="hljs-params">self, a: <span class="hljs-built_in">float</span>, b: <span class="hljs-built_in">float</span></span>) -&gt; <span class="hljs-built_in">float</span>:<br>        <span class="hljs-keyword">return</span> a - b<br><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">calculate_two_float</span>(<span class="hljs-params">operator: Operator, a: <span class="hljs-built_in">float</span>, b: <span class="hljs-built_in">float</span></span>) -&gt; <span class="hljs-built_in">float</span>:<br>    res: <span class="hljs-built_in">float</span> = operator.calculate(a, b)<br>    <span class="hljs-keyword">return</span> res<br><br>calculate_two_float(AddOperator(), <span class="hljs-number">10</span>, <span class="hljs-number">5</span>)  <span class="hljs-comment"># 15</span><br>calculate_two_float(MinusOperator(), <span class="hljs-number">10</span>, <span class="hljs-number">5</span>)  <span class="hljs-comment"># 5</span><br></code></pre></td></tr></table></figure>
+
+
+
+<h2 id="參考資料："><a href="#參考資料：" class="headerlink" title="參考資料："></a>參考資料：</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://wadehuanglearning.blogspot.com/2019/12/blog-post.html">再談物件導向設計原則: 單一職責原則，定義、解析與實踐</a></li>
+<li><a target="_blank" rel="noopener" href="https://igouist.github.io/post/2020/09/oo-9-solid/">菜雞與物件導向 (9): SOLID</a></li>
+<li><a target="_blank" rel="noopener" href="https://notfalse.net/1/dip">依賴反向原則 (Dependency-Inversion Principle, DIP)</a></li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Programming/" class="category-chain-item">Programming</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/Programming/Python/" class="category-chain-item">Python</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/OOP/" class="print-no-link">#OOP</a>
+      
+        <a href="/tags/Python/" class="print-no-link">#Python</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Python 與物件導向（五）：SOLID 原則</div>
+      <div>https://jamiechen-1230.github.io/2023/08/05/python-oop-solid/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Duke</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>發布於</div>
+          <div>2023年8月5日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>許可協議</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/08/06/python-oop-inheritance-composition/" title="Python 與物件導向（六）：繼承 vs 組合">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Python 與物件導向（六）：繼承 vs 組合</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/08/04/python-oop-abstract-interface/" title="Python 與物件導向（四）：抽象類別與介面">
+                        <span class="hidden-mobile">Python 與物件導向（四）：抽象類別與介面</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目錄</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜尋</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">關鍵字</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允許 JavaScript 運行的環境下瀏覽效果更佳</div>
+  </noscript>
+</body>
+</html>
